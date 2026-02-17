@@ -10,4 +10,9 @@ public class HealthController {
     public String healthCheck() {
         return "Server is healthy!";
     }
+
+    @GetMapping("/health-check")
+    public String healthCheckAlias() {
+        return "Server is healthy!";
+    }
 }
