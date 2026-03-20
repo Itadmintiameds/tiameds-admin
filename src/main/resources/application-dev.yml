@@ -7,7 +7,7 @@ spring:
     # Use DB_HOST to switch between local (default) and docker-compose.
     url: jdbc:postgresql://${DB_HOST:localhost}:5432/pharma-aggregator?charSet=UTF8
     username: postgres
-    password: ${POSTGRES_PASSWORD:postgres}
+    password: ${POSTGRES_PASSWORD:root}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -21,8 +21,8 @@ spring:
   mail:   # Email configuration
     host: smtp.gmail.com
     port: 587
-    username: ${MAIL_USERNAME}
-    password: ${MAIL_PASSWORD}
+    username: ${MAIL_USERNAME:dummy}
+    password: ${MAIL_PASSWORD:dummy}
     properties:
       mail:
         smtp:
@@ -33,10 +33,10 @@ spring:
 
   # Twilio sms
 twilio:
-  account-sid: ${ACCOUNT_SID}
-  auth-token: ${AUTH_TOKEN}
+  account-sid: ${ACCOUNT_SID:dummy}
+  auth-token: ${AUTH_TOKEN:dummy}
   verify:
-    service-sid: ${SERVICE_SID}
+    service-sid: ${SERVICE_SID:dummy}
 
 springdoc:
   swagger-ui:
