@@ -15,7 +15,13 @@
         }
       ],
       "essential": true,
-      "environment": [],
+      "environment": [
+        {
+          "name": "SPRING_PROFILES_ACTIVE",
+          "value": "test"
+        }
+      ],
+      "environmentFiles": [],
       "mountPoints": [],
       "volumesFrom": [],
       "secrets": [
