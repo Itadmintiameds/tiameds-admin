@@ -1,48 +1,61 @@
 {
-  "taskDefinitionArn": "arn:aws:ecs:ap-south-1:977098986605:task-definition/tiamed-admin-test-task-defination:1",
+  "taskDefinitionArn": "arn:aws:ecs:ap-south-1:977098986605:task-definition/tiamed-admin-test-task-defination:8",
   "containerDefinitions": [
     {
       "name": "tiamed-admin-test",
-      "image": "977098986605.dkr.ecr.ap-south-1.amazonaws.com/admin-test",
+      "image": "977098986605.dkr.ecr.ap-south-1.amazonaws.com/admin-test:2b0691842d155e91387d7054a789d9f3a2052fde",
       "cpu": 0,
       "portMappings": [
         {
-          "name": "tiameds-admin",
           "containerPort": 8080,
           "hostPort": 8080,
           "protocol": "tcp",
+          "name": "tiameds-admin",
           "appProtocol": "http"
         }
       ],
       "essential": true,
       "environment": [],
-      "environmentFiles": [],
       "mountPoints": [],
       "volumesFrom": [],
       "secrets": [
         {
-          "name": "DB_URL",
-          "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:pharma_aggregator_test-IWah61:DB_URL::"
-        },
-        {
-          "name": "DB_PORT",
-          "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:pharma_aggregator_test-IWah61:DB_PORT::"
-        },
-        {
           "name": "DB_NAME",
-          "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:pharma_aggregator_test-IWah61:DB_NAME::"
-        },
-        {
-          "name": "DB_USERNAME",
-          "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:pharma_aggregator_test-IWah61:DB_USERNAME::"
+          "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-test-gFxdEZ:DB_NAME::"
         },
         {
           "name": "DB_PASSWORD",
-          "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:pharma_aggregator_test-IWah61:DB_PASSWORD::"
+          "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-test-gFxdEZ:DB_PASSWORD::"
+        },
+        {
+          "name": "DB_PORT",
+          "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-test-gFxdEZ:DB_PORT::"
+        },
+        {
+          "name": "DB_URL",
+          "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-test-gFxdEZ:DB_URL::"
+        },
+        {
+          "name": "DB_USERNAME",
+          "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-test-gFxdEZ:DB_USERNAME::"
+        },
+        {
+          "name": "SPRING_MAIL_HOST",
+          "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-test-gFxdEZ:SPRING_MAIL_HOST::"
+        },
+        {
+          "name": "SPRING_MAIL_PORT",
+          "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-test-gFxdEZ:SPRING_MAIL_PORT::"
+        },
+        {
+          "name": "SPRING_MAIL_USERNAME",
+          "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-test-gFxdEZ:SPRING_MAIL_USERNAME::"
+        },
+        {
+          "name": "SPRING_MAIL_PASSWORD",
+          "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-test-gFxdEZ:SPRING_MAIL_PASSWORD::"
         }
-      ]
-    ,
-      "ulimits": [],
+      ],
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
@@ -60,7 +73,7 @@
   "taskRoleArn": "arn:aws:iam::977098986605:role/ecsTaskExecutionRole",
   "executionRoleArn": "arn:aws:iam::977098986605:role/ecsTaskExecutionRole",
   "networkMode": "awsvpc",
-  "revision": 1,
+  "revision": 8,
   "volumes": [],
   "status": "ACTIVE",
   "requiresAttributes": [
@@ -75,6 +88,9 @@
     },
     {
       "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+    },
+    {
+      "name": "ecs.capability.secrets.asm.environment-variables"
     },
     {
       "name": "com.amazonaws.ecs.capability.task-iam-role"
@@ -98,17 +114,17 @@
     "MANAGED_INSTANCES",
     "FARGATE"
   ],
+  "runtimePlatform": {
+    "cpuArchitecture": "X86_64",
+    "operatingSystemFamily": "LINUX"
+  },
   "requiresCompatibilities": [
     "FARGATE"
   ],
   "cpu": "1024",
   "memory": "3072",
-  "runtimePlatform": {
-    "cpuArchitecture": "X86_64",
-    "operatingSystemFamily": "LINUX"
-  },
-  "registeredAt": "2026-02-17T10:54:45.542Z",
-  "registeredBy": "arn:aws:iam::977098986605:root",
+  "registeredAt": "2026-06-19T04:05:30.257Z",
+  "registeredBy": "arn:aws:iam::977098986605:user/bengaluru-team",
   "enableFaultInjection": false,
   "tags": []
 }
