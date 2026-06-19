@@ -5,7 +5,7 @@ server:
 spring:
   datasource:
     # Use DB_HOST to switch between local (default) and docker-compose.
-    url: jdbc:postgresql://${DB_HOST:localhost}:5432/pharma-aggregator?charSet=UTF8
+    url: jdbc:postgresql://${DB_HOST:localhost}:5432/admin_test_db?charSet=UTF8
     username: postgres
     password: ${POSTGRES_PASSWORD:root}
     driver-class-name: org.postgresql.Driver
