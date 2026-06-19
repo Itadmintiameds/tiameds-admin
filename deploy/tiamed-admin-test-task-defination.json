@@ -1,16 +1,16 @@
 {
-  "taskDefinitionArn": "arn:aws:ecs:ap-south-1:977098986605:task-definition/tiamed-admin-test-task-defination:8",
+  "taskDefinitionArn": "arn:aws:ecs:ap-south-1:977098986605:task-definition/tiamed-admin-test-task-defination:1",
   "containerDefinitions": [
     {
       "name": "tiamed-admin-test",
-      "image": "977098986605.dkr.ecr.ap-south-1.amazonaws.com/admin-test:2b0691842d155e91387d7054a789d9f3a2052fde",
+      "image": "977098986605.dkr.ecr.ap-south-1.amazonaws.com/admin-test",
       "cpu": 0,
       "portMappings": [
         {
+          "name": "tiameds-admin",
           "containerPort": 8080,
           "hostPort": 8080,
           "protocol": "tcp",
-          "name": "tiameds-admin",
           "appProtocol": "http"
         }
       ],
@@ -62,6 +62,7 @@
           "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-test-gFxdEZ:SPRING_MAIL_PASSWORD::"
         }
       ],
+      "ulimits": [],
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
