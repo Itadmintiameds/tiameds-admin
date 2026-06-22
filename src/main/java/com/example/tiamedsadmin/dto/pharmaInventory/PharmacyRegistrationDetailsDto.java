@@ -1,4 +1,4 @@
-package com.example.tiamedsadmin.dto;
+package com.example.tiamedsadmin.dto.pharmaInventory;
 
 import lombok.Data;
 
@@ -10,7 +10,7 @@ public class PharmacyRegistrationDetailsDto {
 
     private String pharmacyRegistrationId;
     private String pharmacyName;
-    private PharmacyTypeDto pharmacyType;
+    private String pharmacyType;
     private String pharmacyEmail;
     private String pharmacyPhone;
     private String pharmacyDlNo;

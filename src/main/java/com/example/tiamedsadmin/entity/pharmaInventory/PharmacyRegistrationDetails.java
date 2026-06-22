@@ -1,4 +1,4 @@
-package com.example.tiamedsadmin.entity;
+package com.example.tiamedsadmin.entity.pharmaInventory;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -25,9 +25,8 @@ public class PharmacyRegistrationDetails {
     @Column(name = "pharmacy_name", nullable = false, length = 60)
     private String pharmacyName;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pharmacy_type_id")
-    private PharmacyType pharmacyTypeId;
+    @Column(name = "pharmacy_type",  nullable = false, length = 60)
+    private String pharmacyType;
 
     @Column(name = "pharmacy_email", unique = true, nullable = false, length = 60)
     private String pharmacyEmail;

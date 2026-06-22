@@ -1,6 +1,6 @@
 package com.example.tiamedsadmin.service.phramaInventory;
 
-import com.example.tiamedsadmin.dto.PharmacyRegistrationDetailsDto;
+import com.example.tiamedsadmin.dto.pharmaInventory.PharmacyRegistrationDetailsDto;
 
 import java.util.List;
 

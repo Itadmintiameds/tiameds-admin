@@ -1,4 +1,4 @@
-package com.example.tiamedsadmin.entity;
+package com.example.tiamedsadmin.entity.pharmaInventory;
 
 import jakarta.persistence.*;
 import lombok.Getter;

@@ -1,7 +1,7 @@
-package com.example.tiamedsadmin.mapper;
+package com.example.tiamedsadmin.mapper.pharmaInventory;
 
-import com.example.tiamedsadmin.dto.PharmacyRegistrationDetailsDto;
-import com.example.tiamedsadmin.entity.PharmacyRegistrationDetails;
+import com.example.tiamedsadmin.dto.pharmaInventory.PharmacyRegistrationDetailsDto;
+import com.example.tiamedsadmin.entity.pharmaInventory.PharmacyRegistrationDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -29,7 +29,7 @@ public class PharmacyRegistrationDetailsMapper {
         PharmacyRegistrationDetailsDto dto = new PharmacyRegistrationDetailsDto();
         dto.setPharmacyRegistrationId(pharmacyRegistrationDetails.getPharmacyRegistrationId());
         dto.setPharmacyName(pharmacyRegistrationDetails.getPharmacyName());
-        dto.setPharmacyType(pharmacyTypeMapper.toDto(pharmacyRegistrationDetails.getPharmacyTypeId()));
+        dto.setPharmacyType(pharmacyRegistrationDetails.getPharmacyType());
         dto.setPharmacyEmail(pharmacyRegistrationDetails.getPharmacyEmail());
         dto.setPharmacyPhone(pharmacyRegistrationDetails.getPharmacyPhone());
         dto.setPharmacyDlNo(pharmacyRegistrationDetails.getPharmacyDlNo());

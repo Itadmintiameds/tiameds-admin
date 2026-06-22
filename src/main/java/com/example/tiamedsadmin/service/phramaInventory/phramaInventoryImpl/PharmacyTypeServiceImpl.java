@@ -1,11 +1,11 @@
 package com.example.tiamedsadmin.service.phramaInventory.phramaInventoryImpl;
 
-import com.example.tiamedsadmin.dto.PharmacyTypeDto;
-import com.example.tiamedsadmin.entity.PharmacyType;
+import com.example.tiamedsadmin.dto.pharmaInventory.PharmacyTypeDto;
+import com.example.tiamedsadmin.entity.pharmaInventory.PharmacyType;
 import com.example.tiamedsadmin.exception.ApplicationException;
 import com.example.tiamedsadmin.exception.NotFoundException;
-import com.example.tiamedsadmin.mapper.PharmacyTypeMapper;
-import com.example.tiamedsadmin.repository.PharmacyTypeRepository;
+import com.example.tiamedsadmin.mapper.pharmaInventory.PharmacyTypeMapper;
+import com.example.tiamedsadmin.repository.pharmaInventory.PharmacyTypeRepository;
 import com.example.tiamedsadmin.service.phramaInventory.PharmacyTypeService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

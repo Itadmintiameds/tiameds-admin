@@ -1,7 +1,7 @@
-package com.example.tiamedsadmin.mapper;
+package com.example.tiamedsadmin.mapper.pharmaInventory;
 
-import com.example.tiamedsadmin.dto.PharmacyStatusReviewDto;
-import com.example.tiamedsadmin.entity.PharmacyStatusReview;
+import com.example.tiamedsadmin.dto.pharmaInventory.PharmacyStatusReviewDto;
+import com.example.tiamedsadmin.entity.pharmaInventory.PharmacyStatusReview;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

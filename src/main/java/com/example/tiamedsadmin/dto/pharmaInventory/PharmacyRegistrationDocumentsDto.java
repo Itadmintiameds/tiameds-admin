@@ -1,4 +1,4 @@
-package com.example.tiamedsadmin.dto;
+package com.example.tiamedsadmin.dto.pharmaInventory;
 
 import lombok.Data;
 

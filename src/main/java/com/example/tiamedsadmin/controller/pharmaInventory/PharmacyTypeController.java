@@ -1,6 +1,6 @@
 package com.example.tiamedsadmin.controller.pharmaInventory;
 
-import com.example.tiamedsadmin.dto.PharmacyTypeDto;
+import com.example.tiamedsadmin.dto.pharmaInventory.PharmacyTypeDto;
 import com.example.tiamedsadmin.service.phramaInventory.PharmacyTypeService;
 import com.example.tiamedsadmin.utility.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
