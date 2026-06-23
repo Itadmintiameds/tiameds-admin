@@ -2,24 +2,19 @@ package com.example.tiamedsadmin.mapper.pharmaInventory;
 
 import com.example.tiamedsadmin.dto.pharmaInventory.PharmacyRegistrationDetailsDto;
 import com.example.tiamedsadmin.entity.pharmaInventory.PharmacyRegistrationDetails;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
+import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class PharmacyRegistrationDetailsMapper {
 
     private final PharmacyTypeMapper pharmacyTypeMapper;
     private final PharmacyStatusReviewMapper pharmacyStatusReviewMapper;
     private final PharmacyRegistrationDocumentsMapper pharmacyRegistrationDocumentsMapper;
-
-    public PharmacyRegistrationDetailsMapper(PharmacyTypeMapper pharmacyTypeMapper,
-                                             PharmacyStatusReviewMapper pharmacyStatusReviewMapper,
-                                             PharmacyRegistrationDocumentsMapper pharmacyRegistrationDocumentsMapper) {
-        this.pharmacyTypeMapper = pharmacyTypeMapper;
-        this.pharmacyStatusReviewMapper = pharmacyStatusReviewMapper;
-        this.pharmacyRegistrationDocumentsMapper = pharmacyRegistrationDocumentsMapper;
-    }
 
     public PharmacyRegistrationDetailsDto toDto(PharmacyRegistrationDetails pharmacyRegistrationDetails) {
         if (pharmacyRegistrationDetails == null) {
@@ -61,4 +56,14 @@ public class PharmacyRegistrationDetailsMapper {
 
         return dto;
     }
+
+    public List<PharmacyRegistrationDetailsDto> toDtoList(List<PharmacyRegistrationDetails> pharmacyRegistrationDetails) {
+        if (pharmacyRegistrationDetails.isEmpty()) {
+            return List.of();
+        }
+        return pharmacyRegistrationDetails.stream()
+                .map(this::toDto)
+                .toList();
+    }
+
 }
