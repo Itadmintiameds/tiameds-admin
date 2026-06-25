@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -82,6 +83,19 @@ public class PharmacyRegistrationDetailsController {
                 HttpStatus.OK,
                 "Document verified successfully",
                 null);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/{id}/documents/{documentId}/upload")
+    public ResponseEntity<?> uploadDocument(
+            @PathVariable String id,
+            @PathVariable Long documentId,
+            @RequestParam("file") MultipartFile file) {
+        PharmacyRegistrationDocumentsDto dto = pharmacyRegistrationDetailsService.uploadDocument(id, documentId, file);
+        ApiResponse<PharmacyRegistrationDocumentsDto> response = new ApiResponse<>(
+                HttpStatus.OK,
+                "Document uploaded successfully",
+                dto);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

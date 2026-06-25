@@ -10,20 +10,28 @@ import com.example.tiamedsadmin.exception.NotFoundException;
 import com.example.tiamedsadmin.mapper.pharmaInventory.PharmacyRegistrationDetailsMapper;
 import com.example.tiamedsadmin.repository.pharmaInventory.PharmacyRegistrationDetailsRepository;
 import com.example.tiamedsadmin.service.phramaInventory.PharmacyRegistrationDetailsService;
+import com.example.tiamedsadmin.service.S3Service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
 public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrationDetailsService {
 
+    private static final DateTimeFormatter TS_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+
     private final PharmacyRegistrationDetailsRepository pharmacyRegistrationDetailsRepository;
     private final PharmacyRegistrationDetailsMapper pharmacyRegistrationDetailsMapper;
+    private final S3Service s3Service;
 
     @Override
     public List<PharmacyRegistrationDetailsDto> findAll() {
@@ -169,5 +177,74 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
     public String generateId() {
         int nextSequence = pharmacyRegistrationDetailsRepository.findMaxRegistrationSequence() + 1;
         return String.format("Req-%04d", nextSequence);
+    }
+
+    // ─── API 5: POST - Upload document ──────────────────────────────────────────
+    @Transactional
+    @Override
+    public PharmacyRegistrationDocumentsDto uploadDocument(String registrationId, Long documentId, MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            throw new ApplicationException("File is missing or empty");
+        }
+
+        PharmacyRegistrationDetails existing = pharmacyRegistrationDetailsRepository.findById(registrationId)
+                .orElseThrow(() -> new NotFoundException("Pharmacy Registration not found with id: " + registrationId));
+
+        PharmacyRegistrationDocuments doc = existing.getPharmacyRegistrationDocuments()
+                .stream()
+                .filter(d -> d.getRegistrationDocumentId().equals(documentId))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException("Document not found with id: " + documentId));
+
+        deleteIfRealUrl(doc.getDocumentUrl());
+
+        String now = LocalDateTime.now().format(TS_FORMATTER);
+        String safeType = sanitizeDocumentType(doc.getDocumentType());
+        
+        String key = String.format("pharma-registration/%s/documents/%s-%s.%s",
+                registrationId, safeType, now, extension(file));
+
+        try {
+            String url = s3Service.uploadFile(key, file);
+            doc.setDocumentUrl(url);
+            doc.setUpdatedAt(LocalDateTime.now());
+            pharmacyRegistrationDetailsRepository.save(existing);
+            
+            PharmacyRegistrationDocumentsDto responseDto = new PharmacyRegistrationDocumentsDto();
+            responseDto.setRegistrationDocumentId(doc.getRegistrationDocumentId());
+            responseDto.setDocumentType(doc.getDocumentType());
+            responseDto.setDocumentUrl(doc.getDocumentUrl());
+            responseDto.setActive(doc.isActive());
+            responseDto.setVerified(doc.isVerified());
+            return responseDto;
+        } catch (IOException e) {
+            throw new ApplicationException("Failed to upload file to S3: " + e.getMessage());
+        }
+    }
+
+    private String sanitizeDocumentType(String type) {
+        if (type == null) return "UNKNOWN_DOC";
+        return type.trim().toUpperCase()
+                .replaceAll("[^A-Z0-9]+", "_")
+                .replaceAll("_+", "_")
+                .replaceAll("^_|_$", "");
+    }
+
+    private String extension(MultipartFile file) {
+        String original = Objects.requireNonNullElse(file.getOriginalFilename(), "");
+        int dot = original.lastIndexOf('.');
+        return (dot >= 0 && dot < original.length() - 1)
+                ? original.substring(dot + 1).toLowerCase()
+                : "bin";
+    }
+
+    private void deleteIfRealUrl(String url) {
+        if (url == null || url.isBlank()) return;
+        if (!url.startsWith("https://")) return;
+        try {
+            s3Service.deleteFile(s3Service.extractKeyFromUrl(url));
+        } catch (Exception e) {
+            // Ignored as per reference
+        }
     }
 }

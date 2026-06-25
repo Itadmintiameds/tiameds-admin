@@ -8,6 +8,13 @@ server:
   servlet:
     context-path: /api/v1
 
+aws:
+  s3:
+    access-key: ${AWS_ACCESS_KEY:dummy}
+    secret-key: ${AWS_SECRET_KEY:dummy}
+    region: ${AWS_REGION:ap-south-1}
+    bucket-name: ${AWS_BUCKET_NAME:dummy}
+
 springdoc:
   api-docs:
     path: /api-docs
