@@ -9,7 +9,7 @@ import java.util.List;
 @Component
 public class PharmacyStatusReviewMapper {
 
-    public PharmacyStatusReviewDto  toDto(PharmacyStatusReview pharmacyStatusReview) {
+    public PharmacyStatusReviewDto toDto(PharmacyStatusReview pharmacyStatusReview) {
         if (pharmacyStatusReview == null) {
             return null;
         }

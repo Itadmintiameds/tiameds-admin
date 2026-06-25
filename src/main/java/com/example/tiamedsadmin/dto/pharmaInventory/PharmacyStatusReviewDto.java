@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 @Data
 public class PharmacyStatusReviewDto {
 
+    private String registrationId;
     private Long statusId;
     private String status;
     private String remark;

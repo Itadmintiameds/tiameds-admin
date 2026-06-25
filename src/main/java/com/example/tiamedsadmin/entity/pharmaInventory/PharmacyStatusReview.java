@@ -29,6 +29,9 @@ public class PharmacyStatusReview {
     @Column(name = "remark")
     private String remark;
 
+    @Column(name = "reviewed_by", length = 100)
+    private String reviewedBy; // admin username/ID later
+
     @Column(name = "status_date")
     private LocalDateTime statusDate;
 

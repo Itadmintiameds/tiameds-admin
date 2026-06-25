@@ -75,6 +75,7 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
         statusReview.setPharmacy_registration_id(entity);
         statusReview.setStatus("COMPLIANCE_PENDING");
         statusReview.setRemark("Pharmacy registration initiated");
+        statusReview.setReviewedBy("System");
         statusReview.setStatusDate(LocalDateTime.now());
         entity.setPharmacyStatusReview(new ArrayList<>(List.of(statusReview)));
 
@@ -110,6 +111,7 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
         statusReview.setPharmacy_registration_id(existing);
         statusReview.setStatus("SUBMITTED");
         statusReview.setRemark("Pharmacy registration submitted for review");
+        statusReview.setReviewedBy("System");
         statusReview.setStatusDate(LocalDateTime.now());
         existing.getPharmacyStatusReview().add(statusReview); // add to history, not replace
 
