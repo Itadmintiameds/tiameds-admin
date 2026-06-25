@@ -2,6 +2,13 @@ server:
   servlet:
     context-path: /api/v1
 
+aws:
+  s3:
+    access-key: ${AWS_ACCESS_KEY:dummy}
+    secret-key: ${AWS_SECRET_KEY:dummy}
+    region: ${AWS_REGION:ap-south-1}
+    bucket-name: ${AWS_BUCKET_NAME:dummy}
+
 spring:
   datasource:
     url: jdbc:postgresql://${DB_URL}:${DB_PORT}/${DB_NAME}?characterEncoding=UTF-8
@@ -20,8 +27,8 @@ spring:
   mail: # Email configuration
     host: smtp.gmail.com
     port: 587
-    username: dummy
-    password: dummy
+    username: ${SPRING_MAIL_USERNAME:dummy}
+    password: ${SPRING_MAIL_PASSWORD:dummy}
     properties:
       mail:
         smtp:
@@ -29,6 +36,11 @@ spring:
           starttls:
             enable: true
             required: true
+
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
 
   # Twilio sms
 twilio:

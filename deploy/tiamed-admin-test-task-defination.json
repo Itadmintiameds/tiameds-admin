@@ -46,6 +46,22 @@
           "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-test-gFxdEZ:DB_USERNAME::"
         },
         {
+          "name": "AWS_ACCESS_KEY",
+          "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-test-gFxdEZ:AWS_ACCESS_KEY::"
+        },
+        {
+          "name": "AWS_SECRET_KEY",
+          "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-test-gFxdEZ:AWS_SECRET_KEY::"
+        },
+        {
+          "name": "AWS_REGION",
+          "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-test-gFxdEZ:AWS_REGION::"
+        },
+        {
+          "name": "AWS_BUCKET_NAME",
+          "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-test-gFxdEZ:AWS_BUCKET_NAME::"
+        },
+        {
           "name": "SPRING_MAIL_HOST",
           "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-test-gFxdEZ:SPRING_MAIL_HOST::"
         },

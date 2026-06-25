@@ -28,8 +28,8 @@ spring:
   mail:   # Email configuration
     host: smtp.gmail.com
     port: 587
-    username: ${MAIL_USERNAME:dummy}
-    password: ${MAIL_PASSWORD:dummy}
+    username: ${SPRING_MAIL_USERNAME:dummy}
+    password: ${SPRING_MAIL_PASSWORD:dummy}
     properties:
       mail:
         smtp:
@@ -37,6 +37,11 @@ spring:
           starttls:
             enable: true
             required: true
+
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
 
   # Twilio sms
 twilio:
