@@ -43,6 +43,14 @@ spring:
       max-file-size: 5MB
       max-request-size: 5MB
 
+app:
+  inventory-login-url: http://localhost:3000/
+  admin-frontend-url: http://localhost:3000
+
+microservices:
+  inventory-service:
+    base-url: http://localhost:8081
+
   # Twilio sms
 twilio:
   account-sid: ${ACCOUNT_SID:dummy}

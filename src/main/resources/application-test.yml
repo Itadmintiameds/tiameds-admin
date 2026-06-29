@@ -42,6 +42,14 @@ spring:
       max-file-size: 5MB
       max-request-size: 5MB
 
+app:
+  inventory-login-url: https://pharma-test.tiameds.ai/
+  admin-frontend-url: https://admin-test.tiameds.ai
+
+microservices:
+  inventory-service:
+    base-url: https://apipharma.tiameds.ai
+
   # Twilio sms
 twilio:
   account-sid: 1234567890
