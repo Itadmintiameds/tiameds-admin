@@ -16,8 +16,12 @@ public class PharmacyRegistrationDocumentsMapper {
 
         PharmacyRegistrationDocumentsDto dto = new PharmacyRegistrationDocumentsDto();
         dto.setRegistrationDocumentId(pharmacyRegistrationDocuments.getRegistrationDocumentId());
+        dto.setDocumentNumber(pharmacyRegistrationDocuments.getDocumentNumber());
         dto.setDocumentType(pharmacyRegistrationDocuments.getDocumentType());
         dto.setDocumentUrl(pharmacyRegistrationDocuments.getDocumentUrl());
+        dto.setIssueDate(pharmacyRegistrationDocuments.getIssueDate());
+        dto.setIssueAuthority(pharmacyRegistrationDocuments.getIssueAuthority());
+        dto.setExpiryDate(pharmacyRegistrationDocuments.getExpiryDate());
         dto.setActive(pharmacyRegistrationDocuments.isActive());
         dto.setVerified(pharmacyRegistrationDocuments.isVerified());
 

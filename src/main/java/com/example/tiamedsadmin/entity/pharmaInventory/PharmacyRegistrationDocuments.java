@@ -23,11 +23,23 @@ public class PharmacyRegistrationDocuments {
     @JoinColumn(name = "pharmacy_registration_id")
     private PharmacyRegistrationDetails pharmacy_registration_id;
 
+    @Column(name = "document_number", length = 60)
+    private String documentNumber;
+
     @Column(name = "document_type", nullable = false, length = 100)
     private String documentType;
 
     @Column(name = "document_url")
     private String documentUrl;
+
+    @Column(name = "issue_date")
+    private LocalDateTime issueDate;
+
+    @Column(name = "issue_authority", length = 100)
+    private String issueAuthority;
+
+    @Column(name = "expiry_date")
+    private LocalDateTime expiryDate;
 
     @Column(name = "is_active", columnDefinition = "BOOLEAN DEFAULT TRUE")
     private boolean isActive;

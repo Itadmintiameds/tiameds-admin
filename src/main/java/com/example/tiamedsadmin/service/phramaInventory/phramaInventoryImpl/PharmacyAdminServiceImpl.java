@@ -125,11 +125,17 @@ public class PharmacyAdminServiceImpl implements PharmacyAdminService {
 
     private void createPharmacyInInventory(PharmacyRegistrationDetails existing) {
         // Build documents list from existing pharmacy documents
-        List<Map<String, String>> documents = existing.getPharmacyRegistrationDocuments().stream()
-                .map(doc -> Map.of(
-                        "documentType", doc.getDocumentType(),
-                        "documentUrl", doc.getDocumentUrl()
-                ))
+        List<Map<String, Object>> documents = existing.getPharmacyRegistrationDocuments().stream()
+                .map(doc -> {
+                    Map<String, Object> docMap = new HashMap<>();
+                    docMap.put("documentNumber", doc.getDocumentNumber());
+                    docMap.put("documentType", doc.getDocumentType());
+                    docMap.put("documentUrl", doc.getDocumentUrl());
+                    docMap.put("issueDate", doc.getIssueDate());
+                    docMap.put("issueAuthority", doc.getIssueAuthority());
+                    docMap.put("expiryDate", doc.getExpiryDate());
+                    return docMap;
+                })
                 .toList();
 
         Map<String, Object> requestBody = new HashMap<>();
@@ -138,12 +144,13 @@ public class PharmacyAdminServiceImpl implements PharmacyAdminService {
         requestBody.put("pharmacyType", existing.getPharmacyType());
         requestBody.put("pharmacyEmail", existing.getPharmacyEmail());
         requestBody.put("pharmacyPhone", existing.getPharmacyPhone());
-        requestBody.put("pharmacyDlno", existing.getPharmacyDlNo());
-        requestBody.put("pharmacyGstno", existing.getPharmacyGstNo());
-        requestBody.put("pharmacyPan", existing.getPharmacyPanNo());
-        requestBody.put("pharmacyBusinessRegistrationNo", existing.getPharmacyBusinessRegistrationNo());
-        requestBody.put("pharmacyDlExpiryDate", existing.getPharmacyDlExpiryDate());
-        requestBody.put("pharmacyAddress", existing.getPharmacyAddress());
+        requestBody.put("pharmacyStreet", existing.getPharmacyStreet());
+        requestBody.put("pharmacyCity", existing.getPharmacyCity());
+        requestBody.put("pharmacyTaluka", existing.getPharmacyTaluka());
+        requestBody.put("pharmacyDistricts", existing.getPharmacyDistricts());
+        requestBody.put("pharmacyPincode", existing.getPharmacyPincode());
+        requestBody.put("pharmacyLandmark", existing.getPharmacyLandmark());
+        requestBody.put("pharmacyState", existing.getPharmacyState());
         requestBody.put("pharmacyDocuments", documents);
 
         webClient.post()

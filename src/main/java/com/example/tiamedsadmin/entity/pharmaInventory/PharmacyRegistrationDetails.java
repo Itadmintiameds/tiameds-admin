@@ -25,7 +25,7 @@ public class PharmacyRegistrationDetails {
     @Column(name = "pharmacy_name", nullable = false, length = 60)
     private String pharmacyName;
 
-    @Column(name = "pharmacy_type",  nullable = false, length = 60)
+    @Column(name = "pharmacy_type", nullable = false, length = 60)
     private String pharmacyType;
 
     @Column(name = "pharmacy_email", unique = true, nullable = false, length = 60)
@@ -34,23 +34,26 @@ public class PharmacyRegistrationDetails {
     @Column(name = "pharmacy_phone", unique = true, length = 60)
     private String pharmacyPhone;
 
-    @Column(name = "pharmacy_dl_no", unique = true, length = 60)        // Drug License Number
-    private String pharmacyDlNo;
+    @Column(name = "pharmacy_street", length = 60)
+    private String pharmacyStreet;
 
-    @Column(name = "pharmacy_dl_expiry_date")       // Drug License Expiry Date
-    private LocalDateTime pharmacyDlExpiryDate;
+    @Column(name = "pharmacy_city", length = 60)
+    private String pharmacyCity;
 
-    @Column(name = "pharmacy_gst_no", unique = true, length = 60)
-    private String pharmacyGstNo;
+    @Column(name = "pharmacy_taluka", length = 60)
+    private String pharmacyTaluka;
 
-    @Column(name = "pharmacy_pan_no", unique = true, length = 100)
-    private String pharmacyPanNo;
+    @Column(name = "pharmacy_districts", length = 60)
+    private String pharmacyDistricts;
 
-    @Column(name = "pharmacy_business_registration_no", unique = true, length = 100)
-    private String pharmacyBusinessRegistrationNo;
+    @Column(name = "pharmacy_pincode", length = 6)
+    private Long pharmacyPincode;
 
-    @Column(name = "pharmacy_address")
-    private String pharmacyAddress;
+    @Column(name = "pharmacy_landmark", length = 60)
+    private String pharmacyLandmark;
+
+    @Column(name = "pharmacy_state", length = 60)
+    private String pharmacyState;
 
     @Column(name = "pharmacy_id", unique = true, length = 60)        // Pharmacy ID After Approval
     private String pharmacyId;

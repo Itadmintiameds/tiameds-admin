@@ -97,12 +97,13 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
         existing.setPharmacyType(dto.getPharmacyType());
         existing.setPharmacyEmail(dto.getPharmacyEmail());
         existing.setPharmacyPhone(dto.getPharmacyPhone());
-        existing.setPharmacyDlNo(dto.getPharmacyDlNo());
-        existing.setPharmacyDlExpiryDate(dto.getPharmacyDlExpiryDate());
-        existing.setPharmacyGstNo(dto.getPharmacyGstNo());
-        existing.setPharmacyPanNo(dto.getPharmacyPanNo());
-        existing.setPharmacyBusinessRegistrationNo(dto.getPharmacyBusinessRegistrationNo());
-        existing.setPharmacyAddress(dto.getPharmacyAddress());
+        existing.setPharmacyStreet(dto.getPharmacyStreet());
+        existing.setPharmacyCity(dto.getPharmacyCity());
+        existing.setPharmacyTaluka(dto.getPharmacyTaluka());
+        existing.setPharmacyDistricts(dto.getPharmacyDistricts());
+        existing.setPharmacyPincode(dto.getPharmacyPincode());
+        existing.setPharmacyLandmark(dto.getPharmacyLandmark());
+        existing.setPharmacyState(dto.getPharmacyState());
         existing.setUpdatedDate(LocalDateTime.now());
         existing.setUpdatedBy("System");
 
@@ -122,8 +123,12 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
                     .map(docDto -> {
                         PharmacyRegistrationDocuments doc = new PharmacyRegistrationDocuments();
                         doc.setPharmacy_registration_id(existing);
-                        doc.setDocumentType(docDto.getDocumentType()); // from frontend
-                        doc.setDocumentUrl("NOT_UPLOADED");            // default
+                        doc.setDocumentNumber(docDto.getDocumentNumber());
+                        doc.setDocumentType(docDto.getDocumentType());
+                        doc.setDocumentUrl("NOT_UPLOADED");
+                        doc.setIssueDate(docDto.getIssueDate());
+                        doc.setIssueAuthority(docDto.getIssueAuthority());
+                        doc.setExpiryDate(docDto.getExpiryDate());
                         doc.setActive(true);
                         doc.setVerified(false);
                         doc.setCreatedAt(LocalDateTime.now());

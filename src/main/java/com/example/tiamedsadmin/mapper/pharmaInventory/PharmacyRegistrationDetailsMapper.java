@@ -27,12 +27,13 @@ public class PharmacyRegistrationDetailsMapper {
         dto.setPharmacyType(pharmacyRegistrationDetails.getPharmacyType());
         dto.setPharmacyEmail(pharmacyRegistrationDetails.getPharmacyEmail());
         dto.setPharmacyPhone(pharmacyRegistrationDetails.getPharmacyPhone());
-        dto.setPharmacyDlNo(pharmacyRegistrationDetails.getPharmacyDlNo());
-        dto.setPharmacyDlExpiryDate(pharmacyRegistrationDetails.getPharmacyDlExpiryDate());
-        dto.setPharmacyGstNo(pharmacyRegistrationDetails.getPharmacyGstNo());
-        dto.setPharmacyPanNo(pharmacyRegistrationDetails.getPharmacyPanNo());
-        dto.setPharmacyBusinessRegistrationNo(pharmacyRegistrationDetails.getPharmacyBusinessRegistrationNo());
-        dto.setPharmacyAddress(pharmacyRegistrationDetails.getPharmacyAddress());
+        dto.setPharmacyStreet(pharmacyRegistrationDetails.getPharmacyStreet());
+        dto.setPharmacyCity(pharmacyRegistrationDetails.getPharmacyCity());
+        dto.setPharmacyTaluka(pharmacyRegistrationDetails.getPharmacyTaluka());
+        dto.setPharmacyDistricts(pharmacyRegistrationDetails.getPharmacyDistricts());
+        dto.setPharmacyPincode(pharmacyRegistrationDetails.getPharmacyPincode());
+        dto.setPharmacyLandmark(pharmacyRegistrationDetails.getPharmacyLandmark());
+        dto.setPharmacyState(pharmacyRegistrationDetails.getPharmacyState());
         dto.setPharmacyId(pharmacyRegistrationDetails.getPharmacyId());
 
         if (pharmacyRegistrationDetails.getPharmacyStatusReview() != null) {
