@@ -22,17 +22,26 @@ public class PharmacyRegistrationDetails {
     @Column(name = "pharmacy_registration_id")
     private String pharmacyRegistrationId;
 
+    @Column(name = "user_id", nullable = false, length = 60)
+    private String userId;
+
     @Column(name = "pharmacy_name", nullable = false, length = 60)
     private String pharmacyName;
 
     @Column(name = "pharmacy_type", nullable = false, length = 60)
     private String pharmacyType;
 
-    @Column(name = "pharmacy_email", unique = true, nullable = false, length = 60)
+    @Column(name = "pharmacy_email", nullable = false, length = 60)
     private String pharmacyEmail;
 
-    @Column(name = "pharmacy_phone", unique = true, length = 60)
+    @Column(name = "pharmacy_phone", length = 60)
     private String pharmacyPhone;
+
+    @Column(name = "pharmacy_branch", length = 60)
+    private String pharmacyBranch;
+
+    @Column(name = "pharmacy_building_no", length = 60)
+    private String pharmacyBuildingNo;
 
     @Column(name = "pharmacy_street", length = 60)
     private String pharmacyStreet;
@@ -54,6 +63,9 @@ public class PharmacyRegistrationDetails {
 
     @Column(name = "pharmacy_state", length = 60)
     private String pharmacyState;
+
+    @Column(name = "organization_id")
+    private Long organizationId;
 
     @Column(name = "pharmacy_id", unique = true, length = 60)        // Pharmacy ID After Approval
     private String pharmacyId;

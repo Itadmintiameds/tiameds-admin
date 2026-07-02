@@ -140,10 +140,13 @@ public class PharmacyAdminServiceImpl implements PharmacyAdminService {
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("pharmacyRegistrationId", existing.getPharmacyRegistrationId());
+        requestBody.put("userId", existing.getUserId());
         requestBody.put("pharmacyName", existing.getPharmacyName());
         requestBody.put("pharmacyType", existing.getPharmacyType());
         requestBody.put("pharmacyEmail", existing.getPharmacyEmail());
         requestBody.put("pharmacyPhone", existing.getPharmacyPhone());
+        requestBody.put("pharmacyBranch", existing.getPharmacyBranch());
+        requestBody.put("pharmacyBuildingNo", existing.getPharmacyBuildingNo());
         requestBody.put("pharmacyStreet", existing.getPharmacyStreet());
         requestBody.put("pharmacyCity", existing.getPharmacyCity());
         requestBody.put("pharmacyTaluka", existing.getPharmacyTaluka());
@@ -151,6 +154,7 @@ public class PharmacyAdminServiceImpl implements PharmacyAdminService {
         requestBody.put("pharmacyPincode", existing.getPharmacyPincode());
         requestBody.put("pharmacyLandmark", existing.getPharmacyLandmark());
         requestBody.put("pharmacyState", existing.getPharmacyState());
+        requestBody.put("organizationId", existing.getOrganizationId());
         requestBody.put("pharmacyDocuments", documents);
 
         webClient.post()

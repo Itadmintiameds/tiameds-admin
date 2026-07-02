@@ -9,20 +9,20 @@ import com.example.tiamedsadmin.exception.ApplicationException;
 import com.example.tiamedsadmin.exception.NotFoundException;
 import com.example.tiamedsadmin.mapper.pharmaInventory.PharmacyRegistrationDetailsMapper;
 import com.example.tiamedsadmin.repository.pharmaInventory.PharmacyRegistrationDetailsRepository;
-import com.example.tiamedsadmin.service.phramaInventory.PharmacyRegistrationDetailsService;
 import com.example.tiamedsadmin.service.S3Service;
+import com.example.tiamedsadmin.service.phramaInventory.PharmacyRegistrationDetailsService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
@@ -50,7 +50,7 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
         return pharmacyRegistrationDetailsMapper.toDto(pharmacyRegistrationDetails);
     }
 
-    // ─── API 1: POST - Basic details only ────────────────────────────────────────
+    // ─── API 1: POST - Full details + create document rows with NOT_UPLOADED ──────
     @Override
     @Transactional
     public PharmacyRegistrationDetailsDto create(PharmacyRegistrationDetailsDto dto) {
@@ -59,12 +59,24 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
             throw new ApplicationException("Pharmacy with email already exists: " + dto.getPharmacyEmail());
         }
 
-        // Set basic fields only
+        // Set all fields
         PharmacyRegistrationDetails entity = new PharmacyRegistrationDetails();
         entity.setPharmacyRegistrationId(generateId()); // e.g., Req-0001, Req-0002
+        entity.setUserId(dto.getUserId());
         entity.setPharmacyName(dto.getPharmacyName());
         entity.setPharmacyType(dto.getPharmacyType());
         entity.setPharmacyEmail(dto.getPharmacyEmail());
+        entity.setPharmacyPhone(dto.getPharmacyPhone());
+        entity.setPharmacyBranch(dto.getPharmacyBranch());
+        entity.setPharmacyBuildingNo(dto.getPharmacyBuildingNo());
+        entity.setPharmacyStreet(dto.getPharmacyStreet());
+        entity.setPharmacyCity(dto.getPharmacyCity());
+        entity.setPharmacyTaluka(dto.getPharmacyTaluka());
+        entity.setPharmacyDistricts(dto.getPharmacyDistricts());
+        entity.setPharmacyPincode(dto.getPharmacyPincode());
+        entity.setPharmacyLandmark(dto.getPharmacyLandmark());
+        entity.setPharmacyState(dto.getPharmacyState());
+        entity.setOrganizationId(dto.getOrganizationId());
 
         entity.setCreatedDate(LocalDateTime.now());
         entity.setUpdatedDate(LocalDateTime.now());
@@ -74,16 +86,41 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
         // Create status row and set directly to entity
         PharmacyStatusReview statusReview = new PharmacyStatusReview();
         statusReview.setPharmacy_registration_id(entity);
-        statusReview.setStatus("COMPLIANCE_PENDING");
-        statusReview.setRemark("Pharmacy registration initiated");
+        statusReview.setStatus("SUBMITTED");
+        statusReview.setRemark("Pharmacy registration submitted for review");
         statusReview.setReviewedBy("System");
         statusReview.setStatusDate(LocalDateTime.now());
         entity.setPharmacyStatusReview(new ArrayList<>(List.of(statusReview)));
+
+        // Create document rows with NOT_UPLOADED — documentType from frontend
+        List<PharmacyRegistrationDocuments> documents = new ArrayList<>();
+        if (dto.getPharmacyRegistrationDocuments() != null) {
+            documents = dto.getPharmacyRegistrationDocuments()
+                    .stream()
+                    .map(docDto -> {
+                        PharmacyRegistrationDocuments doc = new PharmacyRegistrationDocuments();
+                        doc.setPharmacy_registration_id(entity);
+                        doc.setDocumentNumber(docDto.getDocumentNumber());
+                        doc.setDocumentType(docDto.getDocumentType());
+                        doc.setDocumentUrl("NOT_UPLOADED");
+                        doc.setIssueDate(docDto.getIssueDate());
+                        doc.setIssueAuthority(docDto.getIssueAuthority());
+                        doc.setExpiryDate(docDto.getExpiryDate());
+                        doc.setActive(true);
+                        doc.setVerified(false);
+                        doc.setCreatedAt(LocalDateTime.now());
+                        doc.setUpdatedAt(LocalDateTime.now());
+                        return doc;
+                    })
+                    .toList();
+        }
+        entity.setPharmacyRegistrationDocuments(new ArrayList<>(documents));
 
         PharmacyRegistrationDetails saved = pharmacyRegistrationDetailsRepository.save(entity);
         return pharmacyRegistrationDetailsMapper.toDto(saved);
     }
 
+    /* Currently not using this method */
     // ─── API 2: PUT - Full details + create document rows with NOT_UPLOADED ───────
     @Override
     @Transactional
@@ -98,6 +135,8 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
         existing.setPharmacyType(dto.getPharmacyType());
         existing.setPharmacyEmail(dto.getPharmacyEmail());
         existing.setPharmacyPhone(dto.getPharmacyPhone());
+        existing.setPharmacyBranch(dto.getPharmacyBranch());
+        existing.setPharmacyBuildingNo(dto.getPharmacyBuildingNo());
         existing.setPharmacyStreet(dto.getPharmacyStreet());
         existing.setPharmacyCity(dto.getPharmacyCity());
         existing.setPharmacyTaluka(dto.getPharmacyTaluka());
@@ -105,6 +144,7 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
         existing.setPharmacyPincode(dto.getPharmacyPincode());
         existing.setPharmacyLandmark(dto.getPharmacyLandmark());
         existing.setPharmacyState(dto.getPharmacyState());
+        existing.setOrganizationId(dto.getOrganizationId());
         existing.setUpdatedDate(LocalDateTime.now());
         existing.setUpdatedBy("System");
 
@@ -170,6 +210,8 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
         existing.setPharmacyType(dto.getPharmacyType());
         existing.setPharmacyEmail(dto.getPharmacyEmail());
         existing.setPharmacyPhone(dto.getPharmacyPhone());
+        existing.setPharmacyBranch(dto.getPharmacyBranch());
+        existing.setPharmacyBuildingNo(dto.getPharmacyBuildingNo());
         existing.setPharmacyStreet(dto.getPharmacyStreet());
         existing.setPharmacyCity(dto.getPharmacyCity());
         existing.setPharmacyTaluka(dto.getPharmacyTaluka());
@@ -177,6 +219,7 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
         existing.setPharmacyPincode(dto.getPharmacyPincode());
         existing.setPharmacyLandmark(dto.getPharmacyLandmark());
         existing.setPharmacyState(dto.getPharmacyState());
+        existing.setOrganizationId(dto.getOrganizationId());
         existing.setUpdatedDate(LocalDateTime.now());
         existing.setUpdatedBy("System");
 
@@ -293,7 +336,7 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
 
         String now = LocalDateTime.now().format(TS_FORMATTER);
         String safeType = sanitizeDocumentType(doc.getDocumentType());
-        
+
         String key = String.format("pharma-registration/%s/documents/%s-%s.%s",
                 registrationId, safeType, now, extension(file));
 
@@ -302,7 +345,7 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
             doc.setDocumentUrl(url);
             doc.setUpdatedAt(LocalDateTime.now());
             pharmacyRegistrationDetailsRepository.save(existing);
-            
+
             PharmacyRegistrationDocumentsDto responseDto = new PharmacyRegistrationDocumentsDto();
             responseDto.setRegistrationDocumentId(doc.getRegistrationDocumentId());
             responseDto.setDocumentType(doc.getDocumentType());
