@@ -63,6 +63,18 @@ public class PharmacyRegistrationDetailsController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PutMapping("/{id}/resubmit")
+    public ResponseEntity<?> resubmit(
+            @PathVariable String id,
+            @RequestBody PharmacyRegistrationDetailsDto dto) {
+        PharmacyRegistrationDetailsDto resubmittedDto = pharmacyRegistrationDetailsService.resubmit(id, dto);
+        ApiResponse<PharmacyRegistrationDetailsDto> response = new ApiResponse<>(
+                HttpStatus.OK,
+                "Pharmacy registration resubmitted successfully",
+                resubmittedDto);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable String id) {
         pharmacyRegistrationDetailsService.delete(id);

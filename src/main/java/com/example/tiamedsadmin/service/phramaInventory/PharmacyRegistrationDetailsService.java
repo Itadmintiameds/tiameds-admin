@@ -16,6 +16,8 @@ public interface PharmacyRegistrationDetailsService {
 
     PharmacyRegistrationDetailsDto update(String id, PharmacyRegistrationDetailsDto pharmacyRegistrationDetailsDto);
 
+    PharmacyRegistrationDetailsDto resubmit(String id, PharmacyRegistrationDetailsDto pharmacyRegistrationDetailsDto);
+
     void delete(String id);
 
     void verifyDocument(String pharmacyRegistrationId,

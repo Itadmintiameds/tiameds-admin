@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.io.IOException;
@@ -139,6 +140,91 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
 
             existing.getPharmacyRegistrationDocuments().addAll(documents);
         }
+
+        PharmacyRegistrationDetails saved = pharmacyRegistrationDetailsRepository.save(existing);
+        return pharmacyRegistrationDetailsMapper.toDto(saved);
+    }
+
+    // ─── API 3: PUT - Resubmit after admin sent for correction ────────────────────
+    @Override
+    @Transactional
+    public PharmacyRegistrationDetailsDto resubmit(String id, PharmacyRegistrationDetailsDto dto) {
+
+        PharmacyRegistrationDetails existing = pharmacyRegistrationDetailsRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Pharmacy Registration not found with id: " + id));
+
+        // Guard: resubmission is only allowed when the latest status is CORRECTION
+        PharmacyStatusReview latest = existing.getPharmacyStatusReview().stream()
+                .max(Comparator.comparing(PharmacyStatusReview::getStatusDate,
+                        Comparator.nullsFirst(Comparator.naturalOrder())))
+                .orElseThrow(() -> new ApplicationException("No status history found for pharmacy: " + id));
+
+        if (!"CORRECTION".equalsIgnoreCase(latest.getStatus())) {
+            throw new ApplicationException(
+                    "Pharmacy can only be resubmitted when its current status is CORRECTION. Current status: "
+                            + latest.getStatus());
+        }
+
+        // Update the corrected basic fields
+        existing.setPharmacyName(dto.getPharmacyName());
+        existing.setPharmacyType(dto.getPharmacyType());
+        existing.setPharmacyEmail(dto.getPharmacyEmail());
+        existing.setPharmacyPhone(dto.getPharmacyPhone());
+        existing.setPharmacyStreet(dto.getPharmacyStreet());
+        existing.setPharmacyCity(dto.getPharmacyCity());
+        existing.setPharmacyTaluka(dto.getPharmacyTaluka());
+        existing.setPharmacyDistricts(dto.getPharmacyDistricts());
+        existing.setPharmacyPincode(dto.getPharmacyPincode());
+        existing.setPharmacyLandmark(dto.getPharmacyLandmark());
+        existing.setPharmacyState(dto.getPharmacyState());
+        existing.setUpdatedDate(LocalDateTime.now());
+        existing.setUpdatedBy("System");
+
+        // Update existing document rows in place; add only genuinely new ones
+        if (dto.getPharmacyRegistrationDocuments() != null) {
+            for (PharmacyRegistrationDocumentsDto docDto : dto.getPharmacyRegistrationDocuments()) {
+                if (docDto.getRegistrationDocumentId() != null) {
+                    PharmacyRegistrationDocuments existingDoc = existing.getPharmacyRegistrationDocuments()
+                            .stream()
+                            .filter(d -> d.getRegistrationDocumentId().equals(docDto.getRegistrationDocumentId()))
+                            .findFirst()
+                            .orElseThrow(() -> new NotFoundException(
+                                    "Document not found with id: " + docDto.getRegistrationDocumentId()));
+
+                    existingDoc.setDocumentNumber(docDto.getDocumentNumber());
+                    existingDoc.setDocumentType(docDto.getDocumentType());
+                    existingDoc.setIssueDate(docDto.getIssueDate());
+                    existingDoc.setIssueAuthority(docDto.getIssueAuthority());
+                    existingDoc.setExpiryDate(docDto.getExpiryDate());
+                    existingDoc.setVerified(false); // corrected document must be re-verified
+                    existingDoc.setUpdatedAt(LocalDateTime.now());
+                } else {
+                    // New document added as part of the correction
+                    PharmacyRegistrationDocuments doc = new PharmacyRegistrationDocuments();
+                    doc.setPharmacy_registration_id(existing);
+                    doc.setDocumentNumber(docDto.getDocumentNumber());
+                    doc.setDocumentType(docDto.getDocumentType());
+                    doc.setDocumentUrl("NOT_UPLOADED");
+                    doc.setIssueDate(docDto.getIssueDate());
+                    doc.setIssueAuthority(docDto.getIssueAuthority());
+                    doc.setExpiryDate(docDto.getExpiryDate());
+                    doc.setActive(true);
+                    doc.setVerified(false);
+                    doc.setCreatedAt(LocalDateTime.now());
+                    doc.setUpdatedAt(LocalDateTime.now());
+                    existing.getPharmacyRegistrationDocuments().add(doc);
+                }
+            }
+        }
+
+        // Add RESUBMITTED status to history (keeps CORRECTION row intact)
+        PharmacyStatusReview statusReview = new PharmacyStatusReview();
+        statusReview.setPharmacy_registration_id(existing);
+        statusReview.setStatus("RESUBMITTED");
+        statusReview.setRemark("Pharmacy registration resubmitted after correction");
+        statusReview.setReviewedBy("user");
+        statusReview.setStatusDate(LocalDateTime.now());
+        existing.getPharmacyStatusReview().add(statusReview);
 
         PharmacyRegistrationDetails saved = pharmacyRegistrationDetailsRepository.save(existing);
         return pharmacyRegistrationDetailsMapper.toDto(saved);
