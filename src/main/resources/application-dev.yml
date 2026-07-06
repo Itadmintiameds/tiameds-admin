@@ -46,6 +46,10 @@ spring:
 app:
   inventory-login-url: http://localhost:3000/
   admin-frontend-url: http://localhost:3000
+  admin-seed:
+    full-name: ${ADMIN_SEED_NAME}
+    email: ${ADMIN_SEED_EMAIL}
+    password: ${ADMIN_SEED_PASSWORD}
 
 microservices:
   inventory-service:
@@ -68,3 +72,14 @@ logging:
   level:
     org.springframework.mail: DEBUG
     jakarta.mail: DEBUG
+
+security:
+  jwt:
+    # HS256 secret, must be at least 32 characters. Always override in prod.
+    secret: ${JWT_SECRET}
+    access-token-validity-minutes: ${JWT_ACCESS_VALIDITY_MINUTES}
+    refresh-token-validity-days: ${JWT_REFRESH_VALIDITY_DAYS}
+    refresh-cookie:
+      # Set secure=true and same-site=None in prod if the frontend is on a different site
+      secure: ${JWT_COOKIE_SECURE:false}
+      same-site: ${JWT_COOKIE_SAMESITE:Lax}

@@ -76,6 +76,30 @@
         {
           "name": "SPRING_MAIL_PASSWORD",
           "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-test-gFxdEZ:SPRING_MAIL_PASSWORD::"
+        },
+        {
+          "name": "JWT_SECRET",
+          "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-test-gFxdEZ:JWT_SECRET::"
+        },
+        {
+          "name": "JWT_ACCESS_VALIDITY_MINUTES",
+          "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-test-gFxdEZ:JWT_ACCESS_VALIDITY_MINUTES::"
+        },
+        {
+          "name": "JWT_REFRESH_VALIDITY_DAYS",
+          "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-test-gFxdEZ:JWT_REFRESH_VALIDITY_DAYS::"
+        },
+        {
+          "name": "ADMIN_SEED_NAME",
+          "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-test-gFxdEZ:ADMIN_SEED_NAME::"
+        },
+        {
+          "name": "ADMIN_SEED_EMAIL",
+          "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-test-gFxdEZ:ADMIN_SEED_EMAIL::"
+        },
+        {
+          "name": "ADMIN_SEED_PASSWORD",
+          "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-test-gFxdEZ:ADMIN_SEED_PASSWORD::"
         }
       ],
       "ulimits": [],
