@@ -128,7 +128,7 @@ public class PharmacyAdminServiceImpl implements PharmacyAdminService {
         List<Map<String, Object>> documents = existing.getPharmacyRegistrationDocuments().stream()
                 .map(doc -> {
                     Map<String, Object> docMap = new HashMap<>();
-                    docMap.put("documentNumber", doc.getDocumentNumber());
+                    docMap.put("documentNo", doc.getDocumentNumber());
                     docMap.put("documentType", doc.getDocumentType());
                     docMap.put("documentUrl", doc.getDocumentUrl());
                     docMap.put("issueDate", doc.getIssueDate());
@@ -155,7 +155,7 @@ public class PharmacyAdminServiceImpl implements PharmacyAdminService {
         requestBody.put("pharmacyLandmark", existing.getPharmacyLandmark());
         requestBody.put("pharmacyState", existing.getPharmacyState());
         requestBody.put("organizationId", existing.getOrganizationId());
-        requestBody.put("pharmacyDocuments", documents);
+        requestBody.put("documents", documents);
 
         webClient.post()
                 .uri("/api/v1/pharmacy/create")
