@@ -1,5 +1,6 @@
 package com.example.tiamedsadmin.service.phramaInventory.phramaInventoryImpl;
 
+import com.example.tiamedsadmin.dto.pharmaInventory.InventoryPharmacyResponseDto;
 import com.example.tiamedsadmin.dto.pharmaInventory.PharmacyStatusReviewDto;
 import com.example.tiamedsadmin.entity.pharmaInventory.PharmacyRegistrationDetails;
 import com.example.tiamedsadmin.entity.pharmaInventory.PharmacyStatusReview;
@@ -157,14 +158,22 @@ public class PharmacyAdminServiceImpl implements PharmacyAdminService {
         requestBody.put("organizationId", existing.getOrganizationId());
         requestBody.put("documents", documents);
 
-        webClient.post()
+        InventoryPharmacyResponseDto response = webClient.post()
                 .uri("/api/v1/pharmacy/create")
                 .bodyValue(requestBody)
                 .retrieve()
-                .bodyToMono(Void.class)
+                .bodyToMono(InventoryPharmacyResponseDto.class)
                 .doOnSuccess(v -> log.info("Pharmacy created in inventory: {}", existing.getPharmacyRegistrationId()))
                 .doOnError(e -> log.error("Inventory create failed for pharmacy {}: {}", existing.getPharmacyRegistrationId(), e.getMessage()))
                 .block();
+
+        if (response == null || response.getPharmacyId() == null) {
+            throw new ApplicationException("Inventory service did not return a pharmacy ID");
+        }
+
+        existing.setPharmacyId(response.getPharmacyId());
+        pharmacyRegistrationDetailsRepository.save(existing);
+        log.info("Pharmacy ID {} saved for registration {}", response.getPharmacyId(), existing.getPharmacyRegistrationId());
     }
 
     private void handleRejection(PharmacyRegistrationDetails existing, String remark) {
@@ -183,8 +192,8 @@ public class PharmacyAdminServiceImpl implements PharmacyAdminService {
         });
         pharmacyRegistrationDetailsRepository.save(existing);
 
-        // Call inventory service to delete the pharmacy user
-        deletePharmacyFromInventory(existing);
+        // Call inventory service to mark the user/organization as rejected
+        rejectUserInInventory(existing);
 
         // HTML Email Body
         String body = """
@@ -235,13 +244,13 @@ public class PharmacyAdminServiceImpl implements PharmacyAdminService {
         );
     }
 
-    private void deletePharmacyFromInventory(PharmacyRegistrationDetails existing) {
-        webClient.delete()
-                .uri("/api/v1/user/delete/" + existing.getPharmacyRegistrationId())
+    private void rejectUserInInventory(PharmacyRegistrationDetails existing) {
+        webClient.put()
+                .uri("/api/v1/organization/reject/" + existing.getUserId())
                 .retrieve()
                 .bodyToMono(Void.class)
-                .doOnSuccess(v -> log.info("Pharmacy deleted from inventory: {}", existing.getPharmacyRegistrationId()))
-                .doOnError(e -> log.error("Inventory delete failed for pharmacy {}: {}", existing.getPharmacyRegistrationId(), e.getMessage()))
+                .doOnSuccess(v -> log.info("User rejected in inventory: {}", existing.getUserId()))
+                .doOnError(e -> log.error("Inventory reject failed for user {}: {}", existing.getUserId(), e.getMessage()))
                 .block();
     }
 
