@@ -14,6 +14,8 @@ public class PharmacyRegistrationDetailsDto {
     private String pharmacyType;
     private String pharmacyEmail;
     private String pharmacyPhone;
+    private String panNumber;
+    private String gstNumber;
     private String pharmacyBranch;
     private String pharmacyBuildingNo;
     private String pharmacyStreet;
@@ -24,6 +26,11 @@ public class PharmacyRegistrationDetailsDto {
     private String pharmacyLandmark;
     private String pharmacyState;
     private Long organizationId;
+    private String organizationName;
+    private String organizationType;
+    private String ownershipType;
+    private String organizationPanNumber;
+    private String organizationGstNumber;
     private String pharmacyId;
     private List<PharmacyStatusReviewDto> pharmacyStatusReviews;
     private List<PharmacyRegistrationDocumentsDto> pharmacyRegistrationDocuments;

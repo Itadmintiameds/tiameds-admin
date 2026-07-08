@@ -67,6 +67,8 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
         entity.setPharmacyType(dto.getPharmacyType());
         entity.setPharmacyEmail(dto.getPharmacyEmail());
         entity.setPharmacyPhone(dto.getPharmacyPhone());
+        entity.setPanNumber(dto.getPanNumber());
+        entity.setGstNumber(dto.getGstNumber());
         entity.setPharmacyBranch(dto.getPharmacyBranch());
         entity.setPharmacyBuildingNo(dto.getPharmacyBuildingNo());
         entity.setPharmacyStreet(dto.getPharmacyStreet());
@@ -77,6 +79,11 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
         entity.setPharmacyLandmark(dto.getPharmacyLandmark());
         entity.setPharmacyState(dto.getPharmacyState());
         entity.setOrganizationId(dto.getOrganizationId());
+        entity.setOrganizationName(dto.getOrganizationName());
+        entity.setOrganizationType(dto.getOrganizationType());
+        entity.setOwnershipType(dto.getOwnershipType());
+        entity.setOrganizationPanNumber(dto.getOrganizationPanNumber());
+        entity.setOrganizationGstNumber(dto.getOrganizationGstNumber());
 
         entity.setCreatedDate(LocalDateTime.now());
         entity.setUpdatedDate(LocalDateTime.now());
@@ -135,6 +142,8 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
         existing.setPharmacyType(dto.getPharmacyType());
         existing.setPharmacyEmail(dto.getPharmacyEmail());
         existing.setPharmacyPhone(dto.getPharmacyPhone());
+        existing.setPanNumber(dto.getPanNumber());
+        existing.setGstNumber(dto.getGstNumber());
         existing.setPharmacyBranch(dto.getPharmacyBranch());
         existing.setPharmacyBuildingNo(dto.getPharmacyBuildingNo());
         existing.setPharmacyStreet(dto.getPharmacyStreet());
@@ -145,6 +154,11 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
         existing.setPharmacyLandmark(dto.getPharmacyLandmark());
         existing.setPharmacyState(dto.getPharmacyState());
         existing.setOrganizationId(dto.getOrganizationId());
+        existing.setOrganizationName(dto.getOrganizationName());
+        existing.setOrganizationType(dto.getOrganizationType());
+        existing.setOwnershipType(dto.getOwnershipType());
+        existing.setOrganizationPanNumber(dto.getOrganizationPanNumber());
+        existing.setOrganizationGstNumber(dto.getOrganizationGstNumber());
         existing.setUpdatedDate(LocalDateTime.now());
         existing.setUpdatedBy("System");
 
@@ -210,6 +224,8 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
         existing.setPharmacyType(dto.getPharmacyType());
         existing.setPharmacyEmail(dto.getPharmacyEmail());
         existing.setPharmacyPhone(dto.getPharmacyPhone());
+        existing.setPanNumber(dto.getPanNumber());
+        existing.setGstNumber(dto.getGstNumber());
         existing.setPharmacyBranch(dto.getPharmacyBranch());
         existing.setPharmacyBuildingNo(dto.getPharmacyBuildingNo());
         existing.setPharmacyStreet(dto.getPharmacyStreet());
@@ -220,6 +236,11 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
         existing.setPharmacyLandmark(dto.getPharmacyLandmark());
         existing.setPharmacyState(dto.getPharmacyState());
         existing.setOrganizationId(dto.getOrganizationId());
+        existing.setOrganizationName(dto.getOrganizationName());
+        existing.setOrganizationType(dto.getOrganizationType());
+        existing.setOwnershipType(dto.getOwnershipType());
+        existing.setOrganizationPanNumber(dto.getOrganizationPanNumber());
+        existing.setOrganizationGstNumber(dto.getOrganizationGstNumber());
         existing.setUpdatedDate(LocalDateTime.now());
         existing.setUpdatedBy("System");
 

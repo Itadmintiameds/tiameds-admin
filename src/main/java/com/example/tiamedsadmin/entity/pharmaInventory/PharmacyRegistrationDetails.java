@@ -37,6 +37,12 @@ public class PharmacyRegistrationDetails {
     @Column(name = "pharmacy_phone", length = 60)
     private String pharmacyPhone;
 
+    @Column(name = "pan_number", length = 10)
+    private String panNumber;
+
+    @Column(name = "gst_number", length = 20)
+    private String gstNumber;
+
     @Column(name = "pharmacy_branch", length = 60)
     private String pharmacyBranch;
 
@@ -66,6 +72,21 @@ public class PharmacyRegistrationDetails {
 
     @Column(name = "organization_id")
     private Long organizationId;
+
+    @Column(name = "organization_name", length = 60)
+    private String organizationName;
+
+    @Column(name = "organization_type", length = 60)
+    private String organizationType;
+
+    @Column(name = "ownership_type", length = 60)
+    private String ownershipType;
+
+    @Column(name = "organization_pan_number", length = 10)
+    private String organizationPanNumber;
+
+    @Column(name = "organization_gst_number", length = 20)
+    private String organizationGstNumber;
 
     @Column(name = "pharmacy_id", unique = true, length = 60)        // Pharmacy ID After Approval
     private String pharmacyId;

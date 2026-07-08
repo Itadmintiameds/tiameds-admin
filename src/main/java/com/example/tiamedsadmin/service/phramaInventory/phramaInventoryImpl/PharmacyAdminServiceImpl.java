@@ -146,6 +146,8 @@ public class PharmacyAdminServiceImpl implements PharmacyAdminService {
         requestBody.put("pharmacyType", existing.getPharmacyType());
         requestBody.put("pharmacyEmail", existing.getPharmacyEmail());
         requestBody.put("pharmacyPhone", existing.getPharmacyPhone());
+        requestBody.put("panNumber", existing.getPanNumber());
+        requestBody.put("gstNumber", existing.getGstNumber());
         requestBody.put("pharmacyBranch", existing.getPharmacyBranch());
         requestBody.put("pharmacyBuildingNo", existing.getPharmacyBuildingNo());
         requestBody.put("pharmacyStreet", existing.getPharmacyStreet());
@@ -156,6 +158,11 @@ public class PharmacyAdminServiceImpl implements PharmacyAdminService {
         requestBody.put("pharmacyLandmark", existing.getPharmacyLandmark());
         requestBody.put("pharmacyState", existing.getPharmacyState());
         requestBody.put("organizationId", existing.getOrganizationId());
+        requestBody.put("organizationName", existing.getOrganizationName());
+        requestBody.put("organizationType", existing.getOrganizationType());
+        requestBody.put("ownershipType", existing.getOwnershipType());
+        requestBody.put("organizationPanNumber", existing.getOrganizationPanNumber());
+        requestBody.put("organizationGstNumber", existing.getOrganizationGstNumber());
         requestBody.put("documents", documents);
 
         InventoryPharmacyResponseDto response = webClient.post()
