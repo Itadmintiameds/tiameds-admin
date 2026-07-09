@@ -55,9 +55,9 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
     @Transactional
     public PharmacyRegistrationDetailsDto create(PharmacyRegistrationDetailsDto dto) {
         // Check for duplicate email
-        if (pharmacyRegistrationDetailsRepository.existsByPharmacyEmail(dto.getPharmacyEmail())) {
-            throw new ApplicationException("Pharmacy with email already exists: " + dto.getPharmacyEmail());
-        }
+//        if (pharmacyRegistrationDetailsRepository.existsByPharmacyEmail(dto.getPharmacyEmail())) {
+//            throw new ApplicationException("Pharmacy with email already exists: " + dto.getPharmacyEmail());
+//        }
 
         // Set all fields
         PharmacyRegistrationDetails entity = new PharmacyRegistrationDetails();
