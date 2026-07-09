@@ -71,7 +71,12 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(List.of("http://localhost:3000", "https://admin-test.tiameds.ai"));
+        configuration.setAllowedOriginPatterns(List.of("http://localhost:3000",
+                "http://localhost:3001",
+                "https://admin-test.tiameds.ai",
+                "https://pharma-test.tiameds.ai",
+                "https://*.tiameds.ai",   // any subdomain, e.g. admin-test, pharma-test, api, etc.
+                "https://tiameds.ai"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
