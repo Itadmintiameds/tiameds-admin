@@ -1,12 +1,14 @@
 package com.example.tiamedsadmin.service.phramaInventory.phramaInventoryImpl;
 
 import com.example.tiamedsadmin.dto.pharmaInventory.InventoryPharmacyResponseDto;
+import com.example.tiamedsadmin.dto.pharmaInventory.PharmaDocumentsDto;
 import com.example.tiamedsadmin.dto.pharmaInventory.PharmacyStatusReviewDto;
 import com.example.tiamedsadmin.entity.pharmaInventory.PharmacyRegistrationDetails;
 import com.example.tiamedsadmin.entity.pharmaInventory.PharmacyStatusReview;
 import com.example.tiamedsadmin.exception.ApplicationException;
 import com.example.tiamedsadmin.exception.NotFoundException;
 import com.example.tiamedsadmin.repository.pharmaInventory.PharmacyRegistrationDetailsRepository;
+import com.example.tiamedsadmin.service.S3Service;
 import com.example.tiamedsadmin.service.phramaInventory.PharmacyAdminService;
 import com.example.tiamedsadmin.utility.EmailService;
 import jakarta.transaction.Transactional;
@@ -19,9 +21,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -35,6 +39,7 @@ public class PharmacyAdminServiceImpl implements PharmacyAdminService {
 
     private final PharmacyRegistrationDetailsRepository pharmacyRegistrationDetailsRepository;
     private final EmailService emailService;
+    private final S3Service s3Service;
 
     @Autowired
     @Qualifier("inventoryWebClient")
@@ -179,8 +184,50 @@ public class PharmacyAdminServiceImpl implements PharmacyAdminService {
         }
 
         existing.setPharmacyId(response.getPharmacyId());
+        updateDocumentUrls(existing, response.getDocuments());
         pharmacyRegistrationDetailsRepository.save(existing);
         log.info("Pharmacy ID {} saved for registration {}", response.getPharmacyId(), existing.getPharmacyRegistrationId());
+    }
+
+    /**
+     * The inventory service copies each document into the pharma bucket and returns the new URLs.
+     * Replace the local document URLs with the pharma-bucket ones, then remove the old files
+     * from the admin bucket so they are not stored twice.
+     */
+    private void updateDocumentUrls(PharmacyRegistrationDetails existing, List<PharmaDocumentsDto> inventoryDocuments) {
+        if (inventoryDocuments == null || inventoryDocuments.isEmpty()) {
+            log.warn("Inventory response contained no documents for registration {}", existing.getPharmacyRegistrationId());
+            return;
+        }
+
+        List<String> oldUrls = new ArrayList<>();
+
+        existing.getPharmacyRegistrationDocuments().forEach(doc -> inventoryDocuments.stream()
+                .filter(invDoc -> Objects.equals(invDoc.getDocumentType(), doc.getDocumentType())
+                        && Objects.equals(invDoc.getDocumentNo(), doc.getDocumentNumber()))
+                .findFirst()
+                .ifPresent(invDoc -> {
+                    String oldUrl = doc.getDocumentUrl();
+                    String newUrl = invDoc.getDocumentUrl();
+                    if (newUrl != null && !newUrl.equals(oldUrl)) {
+                        doc.setDocumentUrl(newUrl);
+                        doc.setUpdatedAt(LocalDateTime.now());
+                        if (oldUrl != null) {
+                            oldUrls.add(oldUrl);
+                        }
+                    }
+                }));
+
+        // Delete the admin-bucket copies only after the new URLs are recorded; a failed
+        // delete must not fail the approval, the leftover file can be cleaned up manually.
+        oldUrls.forEach(oldUrl -> {
+            try {
+                s3Service.deleteFile(s3Service.extractKeyFromUrl(oldUrl));
+                log.info("Deleted old document from admin bucket: {}", oldUrl);
+            } catch (Exception e) {
+                log.error("Failed to delete old document from admin bucket {}: {}", oldUrl, e.getMessage());
+            }
+        });
     }
 
     private void handleRejection(PharmacyRegistrationDetails existing, String remark) {
