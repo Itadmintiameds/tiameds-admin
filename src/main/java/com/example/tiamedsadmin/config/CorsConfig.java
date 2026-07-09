@@ -14,7 +14,11 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOriginPatterns("http://localhost:3000", "https://admin-test.tiameds.ai/") // Next.js origins
+                        .allowedOriginPatterns(
+                                "http://localhost:3000",
+                                "http://localhost:3001",
+                                "https://admin-test.tiameds.ai/",
+                                "https://pharma-test.tiameds.ai/") // Next.js origins
                         .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
