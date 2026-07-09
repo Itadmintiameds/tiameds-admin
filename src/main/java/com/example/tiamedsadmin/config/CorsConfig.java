@@ -18,7 +18,9 @@ public class CorsConfig {
                                 "http://localhost:3000",
                                 "http://localhost:3001",
                                 "https://admin-test.tiameds.ai/",
-                                "https://pharma-test.tiameds.ai/") // Next.js origins
+                                "https://pharma-test.tiameds.ai/",
+                                "https://*.tiameds.ai",   // any subdomain, e.g. admin-test, pharma-test, api, etc.
+                                "https://tiameds.ai")     // apex domain, if needed) // Next.js origins
                         .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
