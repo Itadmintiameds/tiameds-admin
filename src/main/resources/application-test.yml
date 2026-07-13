@@ -53,6 +53,8 @@ app:
 microservices:
   inventory-service:
     base-url: https://apipharma.tiameds.ai
+    # Must match internal.api-key configured in the inventory service
+    api-key: ${INVENTORY_INTERNAL_API_KEY:}
 
   # Twilio sms
 twilio:

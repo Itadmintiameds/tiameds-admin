@@ -100,6 +100,10 @@
         {
           "name": "ADMIN_SEED_PASSWORD",
           "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-test-gFxdEZ:ADMIN_SEED_PASSWORD::"
+        },
+        {
+          "name": "INVENTORY_INTERNAL_API_KEY",
+          "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-test-gFxdEZ:INVENTORY_INTERNAL_API_KEY::"
         }
       ],
       "ulimits": [],

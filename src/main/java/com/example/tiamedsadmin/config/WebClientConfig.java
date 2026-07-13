@@ -10,14 +10,20 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Configuration
 public class WebClientConfig {
 
+    private static final String API_KEY_HEADER = "X-API-KEY";
+
     @Value("${microservices.inventory-service.base-url}")
     private String inventoryServiceBaseUrl;
+
+    @Value("${microservices.inventory-service.api-key}")
+    private String inventoryServiceApiKey;
 
     @Bean
     public WebClient inventoryWebClient() {
         return WebClient.builder()
                 .baseUrl(inventoryServiceBaseUrl)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .defaultHeader(API_KEY_HEADER, inventoryServiceApiKey)
                 .build();
     }
 }
