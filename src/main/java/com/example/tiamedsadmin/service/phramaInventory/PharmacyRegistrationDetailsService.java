@@ -1,5 +1,6 @@
 package com.example.tiamedsadmin.service.phramaInventory;
 
+import com.example.tiamedsadmin.dto.pharmaInventory.PharmacyKpiDto;
 import com.example.tiamedsadmin.dto.pharmaInventory.PharmacyRegistrationDetailsDto;
 import com.example.tiamedsadmin.dto.pharmaInventory.PharmacyRegistrationDocumentsDto;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,4 +26,6 @@ public interface PharmacyRegistrationDetailsService {
                         boolean isVerified);
 
     PharmacyRegistrationDocumentsDto uploadDocument(String registrationId, Long documentId, MultipartFile file);
+
+    PharmacyKpiDto getKpis(String userId);
 }

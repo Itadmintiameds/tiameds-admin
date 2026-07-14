@@ -1,6 +1,7 @@
 package com.example.tiamedsadmin.controller.pharmaInventory;
 
 import com.example.tiamedsadmin.dto.pharmaInventory.PharmacyDocumentVerifyDto;
+import com.example.tiamedsadmin.dto.pharmaInventory.PharmacyKpiDto;
 import com.example.tiamedsadmin.dto.pharmaInventory.PharmacyRegistrationDetailsDto;
 import com.example.tiamedsadmin.dto.pharmaInventory.PharmacyRegistrationDocumentsDto;
 import com.example.tiamedsadmin.service.phramaInventory.PharmacyRegistrationDetailsService;
@@ -28,6 +29,16 @@ public class PharmacyRegistrationDetailsController {
                 "Pharmacy registration details fetched successfully",
                 list,
                 list.size());
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/kpis/{userId}")
+    public ResponseEntity<?> getKpis(@PathVariable String userId) {
+        PharmacyKpiDto kpis = pharmacyRegistrationDetailsService.getKpis(userId);
+        ApiResponse<PharmacyKpiDto> response = new ApiResponse<>(
+                HttpStatus.OK,
+                "Pharmacy KPIs fetched successfully",
+                kpis);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

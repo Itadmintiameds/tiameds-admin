@@ -1,5 +1,6 @@
 package com.example.tiamedsadmin.service.phramaInventory.phramaInventoryImpl;
 
+import com.example.tiamedsadmin.dto.pharmaInventory.PharmacyKpiDto;
 import com.example.tiamedsadmin.dto.pharmaInventory.PharmacyRegistrationDetailsDto;
 import com.example.tiamedsadmin.dto.pharmaInventory.PharmacyRegistrationDocumentsDto;
 import com.example.tiamedsadmin.entity.pharmaInventory.PharmacyRegistrationDetails;
@@ -377,6 +378,26 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
         } catch (IOException e) {
             throw new ApplicationException("Failed to upload file to S3: " + e.getMessage());
         }
+    }
+
+    // ─── API 6: GET - Dashboard KPIs for a user ──────────────────────────────────
+    @Override
+    public PharmacyKpiDto getKpis(String userId) {
+        PharmacyKpiDto kpi = new PharmacyKpiDto();
+        kpi.setTotalPharmacies(pharmacyRegistrationDetailsRepository.countByUserId(userId));
+
+        for (Object[] row : pharmacyRegistrationDetailsRepository.countByLatestStatusForUser(userId)) {
+            String status = (String) row[0];
+            long count = ((Number) row[1]).longValue();
+
+            switch (status.toUpperCase()) {
+                case "ACCEPT" -> kpi.setApproved(kpi.getApproved() + count);
+                case "SUBMITTED", "RESUBMITTED" -> kpi.setUnderReview(kpi.getUnderReview() + count);
+                case "CORRECTION" -> kpi.setActionRequired(kpi.getActionRequired() + count);
+                case "REJECT" -> kpi.setRejected(kpi.getRejected() + count);
+            }
+        }
+        return kpi;
     }
 
     private String sanitizeDocumentType(String type) {
