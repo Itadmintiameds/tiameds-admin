@@ -3,6 +3,7 @@ package com.example.tiamedsadmin.service.phramaInventory;
 import com.example.tiamedsadmin.dto.pharmaInventory.PharmacyKpiDto;
 import com.example.tiamedsadmin.dto.pharmaInventory.PharmacyRegistrationDetailsDto;
 import com.example.tiamedsadmin.dto.pharmaInventory.PharmacyRegistrationDocumentsDto;
+import com.example.tiamedsadmin.dto.pharmaInventory.PharmaciesByUserIdDto;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -28,4 +29,6 @@ public interface PharmacyRegistrationDetailsService {
     PharmacyRegistrationDocumentsDto uploadDocument(String registrationId, Long documentId, MultipartFile file);
 
     PharmacyKpiDto getKpis(String userId);
+
+    List<PharmaciesByUserIdDto> findPharmaciesByUserId(String userId);
 }

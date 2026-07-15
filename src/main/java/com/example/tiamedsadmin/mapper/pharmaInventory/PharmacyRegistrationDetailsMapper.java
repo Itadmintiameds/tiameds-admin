@@ -1,12 +1,15 @@
 package com.example.tiamedsadmin.mapper.pharmaInventory;
 
 import com.example.tiamedsadmin.dto.pharmaInventory.PharmacyRegistrationDetailsDto;
+import com.example.tiamedsadmin.dto.pharmaInventory.PharmaciesByUserIdDto;
 import com.example.tiamedsadmin.entity.pharmaInventory.PharmacyRegistrationDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Comparator;
+import com.example.tiamedsadmin.entity.pharmaInventory.PharmacyStatusReview;
 
 @Component
 @RequiredArgsConstructor
@@ -75,6 +78,47 @@ public class PharmacyRegistrationDetailsMapper {
         }
         return pharmacyRegistrationDetails.stream()
                 .map(this::toDto)
+                .toList();
+    }
+
+    public PharmaciesByUserIdDto toPharmaciesByUserIdDto(PharmacyRegistrationDetails details) {
+        if (details == null) {
+            return null;
+        }
+
+        PharmaciesByUserIdDto dto = new PharmaciesByUserIdDto();
+        dto.setPharmacyReqId(details.getPharmacyRegistrationId());
+        dto.setPharmacyId(details.getPharmacyId());
+        dto.setPharmacyName(details.getPharmacyName());
+        dto.setType(details.getPharmacyType());
+        dto.setPharmacyCity(details.getPharmacyCity());
+        
+        if (details.getPharmacyStatusReview() != null && !details.getPharmacyStatusReview().isEmpty()) {
+            PharmacyStatusReview latestReview = 
+                details.getPharmacyStatusReview().stream()
+                    .max(Comparator.comparing(
+                        PharmacyStatusReview::getStatusDate, 
+                        Comparator.nullsFirst(Comparator.naturalOrder())
+                    ))
+                    .orElse(null);
+            if (latestReview != null) {
+                dto.setStatus(latestReview.getStatus());
+            }
+        } else {
+            dto.setStatus("Pending");
+        }
+
+        dto.setUpdatedDate(details.getUpdatedDate());
+
+        return dto;
+    }
+
+    public List<PharmaciesByUserIdDto> toPharmaciesByUserIdDtoList(List<PharmacyRegistrationDetails> detailsList) {
+        if (detailsList.isEmpty()) {
+            return List.of();
+        }
+        return detailsList.stream()
+                .map(this::toPharmaciesByUserIdDto)
                 .toList();
     }
 

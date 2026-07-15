@@ -4,6 +4,7 @@ import com.example.tiamedsadmin.dto.pharmaInventory.PharmacyDocumentVerifyDto;
 import com.example.tiamedsadmin.dto.pharmaInventory.PharmacyKpiDto;
 import com.example.tiamedsadmin.dto.pharmaInventory.PharmacyRegistrationDetailsDto;
 import com.example.tiamedsadmin.dto.pharmaInventory.PharmacyRegistrationDocumentsDto;
+import com.example.tiamedsadmin.dto.pharmaInventory.PharmaciesByUserIdDto;
 import com.example.tiamedsadmin.service.phramaInventory.PharmacyRegistrationDetailsService;
 import com.example.tiamedsadmin.utility.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -119,6 +120,17 @@ public class PharmacyRegistrationDetailsController {
                 HttpStatus.OK,
                 "Document uploaded successfully",
                 dto);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<?> findPharmaciesByUserId(@PathVariable String userId) {
+        List<PharmaciesByUserIdDto> list = pharmacyRegistrationDetailsService.findPharmaciesByUserId(userId);
+        ApiResponse<List<PharmaciesByUserIdDto>> response = new ApiResponse<>(
+                HttpStatus.OK,
+                "Pharmacies fetched successfully for user: " + userId,
+                list,
+                list.size());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

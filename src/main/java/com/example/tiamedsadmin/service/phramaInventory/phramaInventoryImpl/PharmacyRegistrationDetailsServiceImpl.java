@@ -3,6 +3,7 @@ package com.example.tiamedsadmin.service.phramaInventory.phramaInventoryImpl;
 import com.example.tiamedsadmin.dto.pharmaInventory.PharmacyKpiDto;
 import com.example.tiamedsadmin.dto.pharmaInventory.PharmacyRegistrationDetailsDto;
 import com.example.tiamedsadmin.dto.pharmaInventory.PharmacyRegistrationDocumentsDto;
+import com.example.tiamedsadmin.dto.pharmaInventory.PharmaciesByUserIdDto;
 import com.example.tiamedsadmin.entity.pharmaInventory.PharmacyRegistrationDetails;
 import com.example.tiamedsadmin.entity.pharmaInventory.PharmacyRegistrationDocuments;
 import com.example.tiamedsadmin.entity.pharmaInventory.PharmacyStatusReview;
@@ -398,6 +399,12 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
             }
         }
         return kpi;
+    }
+ 
+    @Override
+    public List<PharmaciesByUserIdDto> findPharmaciesByUserId(String userId) {
+        List<PharmacyRegistrationDetails> details = pharmacyRegistrationDetailsRepository.findByUserId(userId);
+        return pharmacyRegistrationDetailsMapper.toPharmaciesByUserIdDtoList(details);
     }
 
     private String sanitizeDocumentType(String type) {

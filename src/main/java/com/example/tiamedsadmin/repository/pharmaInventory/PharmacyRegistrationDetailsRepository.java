@@ -21,6 +21,8 @@ public interface PharmacyRegistrationDetailsRepository extends JpaRepository<Pha
 
     long countByUserId(String userId);
 
+    List<PharmacyRegistrationDetails> findByUserId(String userId);
+
     // Count a user's registrations grouped by their latest status (one row per status, e.g. [ACCEPT, 4])
     @Query(value = """
             SELECT latest.status, COUNT(*)
