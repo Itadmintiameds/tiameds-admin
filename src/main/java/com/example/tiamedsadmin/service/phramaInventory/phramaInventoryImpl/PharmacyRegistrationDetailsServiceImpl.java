@@ -164,37 +164,41 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
         existing.setUpdatedDate(LocalDateTime.now());
         existing.setUpdatedBy("System");
 
-        // Add SUBMITTED status to history (keeps COMPLIANCE_PENDING row intact)
-        PharmacyStatusReview statusReview = new PharmacyStatusReview();
-        statusReview.setPharmacy_registration_id(existing);
-        statusReview.setStatus("SUBMITTED");
-        statusReview.setRemark("Pharmacy registration submitted for review");
-        statusReview.setReviewedBy("System");
-        statusReview.setStatusDate(LocalDateTime.now());
-        existing.getPharmacyStatusReview().add(statusReview); // add to history, not replace
-
-        // Create document rows with NOT_UPLOADED — documentType from frontend
+        // Update existing document rows in place; add only genuinely new ones
         if (dto.getPharmacyRegistrationDocuments() != null) {
-            List<PharmacyRegistrationDocuments> documents = dto.getPharmacyRegistrationDocuments()
-                    .stream()
-                    .map(docDto -> {
-                        PharmacyRegistrationDocuments doc = new PharmacyRegistrationDocuments();
-                        doc.setPharmacy_registration_id(existing);
-                        doc.setDocumentNumber(docDto.getDocumentNumber());
-                        doc.setDocumentType(docDto.getDocumentType());
-                        doc.setDocumentUrl("NOT_UPLOADED");
-                        doc.setIssueDate(docDto.getIssueDate());
-                        doc.setIssueAuthority(docDto.getIssueAuthority());
-                        doc.setExpiryDate(docDto.getExpiryDate());
-                        doc.setActive(true);
-                        doc.setVerified(false);
-                        doc.setCreatedAt(LocalDateTime.now());
-                        doc.setUpdatedAt(LocalDateTime.now());
-                        return doc;
-                    })
-                    .toList();
+            for (PharmacyRegistrationDocumentsDto docDto : dto.getPharmacyRegistrationDocuments()) {
+                if (docDto.getRegistrationDocumentId() != null) {
+                    PharmacyRegistrationDocuments existingDoc = existing.getPharmacyRegistrationDocuments()
+                            .stream()
+                            .filter(d -> d.getRegistrationDocumentId().equals(docDto.getRegistrationDocumentId()))
+                            .findFirst()
+                            .orElseThrow(() -> new NotFoundException(
+                                    "Document not found with id: " + docDto.getRegistrationDocumentId()));
 
-            existing.getPharmacyRegistrationDocuments().addAll(documents);
+                    existingDoc.setDocumentNumber(docDto.getDocumentNumber());
+                    existingDoc.setDocumentType(docDto.getDocumentType());
+                    existingDoc.setIssueDate(docDto.getIssueDate());
+                    existingDoc.setIssueAuthority(docDto.getIssueAuthority());
+                    existingDoc.setExpiryDate(docDto.getExpiryDate());
+                    existingDoc.setVerified(false); // updated document must be re-verified
+                    existingDoc.setUpdatedAt(LocalDateTime.now());
+                } else {
+                    // New document added as part of the update
+                    PharmacyRegistrationDocuments doc = new PharmacyRegistrationDocuments();
+                    doc.setPharmacy_registration_id(existing);
+                    doc.setDocumentNumber(docDto.getDocumentNumber());
+                    doc.setDocumentType(docDto.getDocumentType());
+                    doc.setDocumentUrl("NOT_UPLOADED");
+                    doc.setIssueDate(docDto.getIssueDate());
+                    doc.setIssueAuthority(docDto.getIssueAuthority());
+                    doc.setExpiryDate(docDto.getExpiryDate());
+                    doc.setActive(true);
+                    doc.setVerified(false);
+                    doc.setCreatedAt(LocalDateTime.now());
+                    doc.setUpdatedAt(LocalDateTime.now());
+                    existing.getPharmacyRegistrationDocuments().add(doc);
+                }
+            }
         }
 
         PharmacyRegistrationDetails saved = pharmacyRegistrationDetailsRepository.save(existing);
