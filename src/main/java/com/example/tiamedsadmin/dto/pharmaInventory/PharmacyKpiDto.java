@@ -14,4 +14,5 @@ public class PharmacyKpiDto {
     private long underReview;
     private long actionRequired;
     private long rejected;
+    private long drafts;
 }

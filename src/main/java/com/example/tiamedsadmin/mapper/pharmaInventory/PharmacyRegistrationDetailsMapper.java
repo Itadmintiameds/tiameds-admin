@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Comparator;
 import com.example.tiamedsadmin.entity.pharmaInventory.PharmacyStatusReview;
+import com.example.tiamedsadmin.entity.pharmaInventory.RegistrationStatus;
 
 @Component
 @RequiredArgsConstructor
@@ -49,6 +50,10 @@ public class PharmacyRegistrationDetailsMapper {
         dto.setOrganizationPanNumber(pharmacyRegistrationDetails.getOrganizationPanNumber());
         dto.setOrganizationGstNumber(pharmacyRegistrationDetails.getOrganizationGstNumber());
         dto.setPharmacyId(pharmacyRegistrationDetails.getPharmacyId());
+        // Legacy rows (null) predate the draft feature and are always submitted
+        dto.setRegistrationStatus(pharmacyRegistrationDetails.getRegistrationStatus() != null
+                ? pharmacyRegistrationDetails.getRegistrationStatus().name()
+                : RegistrationStatus.SUBMITTED.name());
 
         if (pharmacyRegistrationDetails.getPharmacyStatusReview() != null) {
             dto.setPharmacyStatusReviews(pharmacyStatusReviewMapper.toDtoList(pharmacyRegistrationDetails.getPharmacyStatusReview()));
@@ -92,7 +97,7 @@ public class PharmacyRegistrationDetailsMapper {
         dto.setPharmacyName(details.getPharmacyName());
         dto.setType(details.getPharmacyType());
         dto.setPharmacyCity(details.getPharmacyCity());
-        
+
         if (details.getPharmacyStatusReview() != null && !details.getPharmacyStatusReview().isEmpty()) {
             PharmacyStatusReview latestReview = 
                 details.getPharmacyStatusReview().stream()

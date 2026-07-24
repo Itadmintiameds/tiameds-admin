@@ -25,13 +25,14 @@ public class PharmacyRegistrationDetails {
     @Column(name = "user_id", nullable = false, length = 60)
     private String userId;
 
-    @Column(name = "pharmacy_name", nullable = false, length = 60)
+    // Nullable so a half-filled DRAFT can be saved; completeness is enforced at submit time
+    @Column(name = "pharmacy_name", length = 60)
     private String pharmacyName;
 
-    @Column(name = "pharmacy_type", nullable = false, length = 60)
+    @Column(name = "pharmacy_type", length = 60)
     private String pharmacyType;
 
-    @Column(name = "pharmacy_email", nullable = false, length = 60)
+    @Column(name = "pharmacy_email", length = 60)
     private String pharmacyEmail;
 
     @Column(name = "pharmacy_phone", length = 60)
@@ -90,6 +91,11 @@ public class PharmacyRegistrationDetails {
 
     @Column(name = "pharmacy_id", unique = true, length = 60)        // Pharmacy ID After Approval
     private String pharmacyId;
+
+    // Nullable for legacy rows created before this column existed; null is treated as SUBMITTED
+    @Enumerated(EnumType.STRING)
+    @Column(name = "registration_status", length = 20)
+    private RegistrationStatus registrationStatus;
 
     @OneToMany(mappedBy = "pharmacy_registration_id", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore

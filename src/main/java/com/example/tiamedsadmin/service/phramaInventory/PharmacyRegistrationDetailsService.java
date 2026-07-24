@@ -16,6 +16,12 @@ public interface PharmacyRegistrationDetailsService {
 
     PharmacyRegistrationDetailsDto create(PharmacyRegistrationDetailsDto pharmacyRegistrationDetailsDto);
 
+    PharmacyRegistrationDetailsDto saveDraft(PharmacyRegistrationDetailsDto pharmacyRegistrationDetailsDto);
+
+    PharmacyRegistrationDetailsDto submitDraft(String id, PharmacyRegistrationDetailsDto pharmacyRegistrationDetailsDto);
+
+    List<PharmacyRegistrationDetailsDto> getDraftsByUserId(String userId);
+
     PharmacyRegistrationDetailsDto update(String id, PharmacyRegistrationDetailsDto pharmacyRegistrationDetailsDto);
 
     PharmacyRegistrationDetailsDto resubmit(String id, PharmacyRegistrationDetailsDto pharmacyRegistrationDetailsDto);

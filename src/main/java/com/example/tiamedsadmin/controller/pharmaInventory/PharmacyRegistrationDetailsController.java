@@ -63,6 +63,44 @@ public class PharmacyRegistrationDetailsController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
+    // Save (or keep updating) a half-filled registration as a draft; only userId is required.
+    // If the body has no pharmacyRegistrationId, the user's existing draft is reused when present.
+    @PostMapping("/draft")
+    public ResponseEntity<?> saveDraft(@RequestBody PharmacyRegistrationDetailsDto dto) {
+        PharmacyRegistrationDetailsDto savedDto = pharmacyRegistrationDetailsService.saveDraft(dto);
+        ApiResponse<PharmacyRegistrationDetailsDto> response = new ApiResponse<>(
+                HttpStatus.OK,
+                "Pharmacy registration draft saved successfully",
+                savedDto);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    // Fetch all saved drafts of a user so the frontend can list them and pre-fill the form
+    @GetMapping("/draft/user/{userId}")
+    public ResponseEntity<?> getDraftsByUserId(@PathVariable String userId) {
+        List<PharmacyRegistrationDetailsDto> list = pharmacyRegistrationDetailsService.getDraftsByUserId(userId);
+        ApiResponse<List<PharmacyRegistrationDetailsDto>> response = new ApiResponse<>(
+                HttpStatus.OK,
+                "Pharmacy registration drafts fetched successfully",
+                list,
+                list.size());
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    // Submit a draft: applies the final form values, validates required fields,
+    // flips DRAFT to SUBMITTED and starts the admin review flow
+    @PutMapping("/{id}/submit")
+    public ResponseEntity<?> submitDraft(
+            @PathVariable String id,
+            @RequestBody PharmacyRegistrationDetailsDto dto) {
+        PharmacyRegistrationDetailsDto submittedDto = pharmacyRegistrationDetailsService.submitDraft(id, dto);
+        ApiResponse<PharmacyRegistrationDetailsDto> response = new ApiResponse<>(
+                HttpStatus.OK,
+                "Pharmacy registration submitted successfully",
+                submittedDto);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<?> update(
             @PathVariable String id,

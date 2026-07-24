@@ -32,6 +32,7 @@ public class PharmacyRegistrationDetailsDto {
     private String organizationPanNumber;
     private String organizationGstNumber;
     private String pharmacyId;
+    private String registrationStatus; // DRAFT or SUBMITTED
     private List<PharmacyStatusReviewDto> pharmacyStatusReviews;
     private List<PharmacyRegistrationDocumentsDto> pharmacyRegistrationDocuments;
     private LocalDateTime createdDate;
