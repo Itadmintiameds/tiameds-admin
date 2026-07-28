@@ -1,16 +1,16 @@
 package com.example.tiamedsadmin.mapper.pharmaInventory;
 
-import com.example.tiamedsadmin.dto.pharmaInventory.PharmacyRegistrationDetailsDto;
 import com.example.tiamedsadmin.dto.pharmaInventory.PharmaciesByUserIdDto;
+import com.example.tiamedsadmin.dto.pharmaInventory.PharmacyRegistrationDetailsDto;
 import com.example.tiamedsadmin.entity.pharmaInventory.PharmacyRegistrationDetails;
+import com.example.tiamedsadmin.entity.pharmaInventory.PharmacyStatusReview;
+import com.example.tiamedsadmin.entity.pharmaInventory.RegistrationStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Comparator;
-import com.example.tiamedsadmin.entity.pharmaInventory.PharmacyStatusReview;
-import com.example.tiamedsadmin.entity.pharmaInventory.RegistrationStatus;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -98,22 +98,27 @@ public class PharmacyRegistrationDetailsMapper {
         dto.setType(details.getPharmacyType());
         dto.setPharmacyCity(details.getPharmacyCity());
 
-        if (details.getPharmacyStatusReview() != null && !details.getPharmacyStatusReview().isEmpty()) {
-            PharmacyStatusReview latestReview = 
-                details.getPharmacyStatusReview().stream()
-                    .max(Comparator.comparing(
-                        PharmacyStatusReview::getStatusDate, 
-                        Comparator.nullsFirst(Comparator.naturalOrder())
-                    ))
-                    .orElse(null);
+        // Drafts have no status reviews; label them explicitly so the UI can
+        // tell them apart from submitted-but-unreviewed registrations
+        if (details.getRegistrationStatus() == RegistrationStatus.DRAFT) {
+            dto.setStatus(RegistrationStatus.DRAFT.toString());
+            dto.setUpdatedDate(details.getUpdatedDate());
+        } else if (details.getPharmacyStatusReview() != null && !details.getPharmacyStatusReview().isEmpty()) {
+            PharmacyStatusReview latestReview =
+                    details.getPharmacyStatusReview().stream()
+                            .max(Comparator.comparing(
+                                    PharmacyStatusReview::getStatusDate,
+                                    Comparator.nullsFirst(Comparator.naturalOrder())
+                            ))
+                            .orElse(null);
             if (latestReview != null) {
                 dto.setStatus(latestReview.getStatus());
+                dto.setUpdatedDate(latestReview.getStatusDate());
             }
         } else {
             dto.setStatus("Pending");
         }
 
-        dto.setUpdatedDate(details.getUpdatedDate());
 
         return dto;
     }

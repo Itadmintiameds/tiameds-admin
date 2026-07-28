@@ -564,9 +564,8 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
  
     @Override
     public List<PharmaciesByUserIdDto> findPharmaciesByUserId(String userId) {
-        // Admin-facing list: drafts are not yet submitted, so they are excluded
         List<PharmacyRegistrationDetails> details =
-                pharmacyRegistrationDetailsRepository.findByUserIdExcludingStatus(userId, RegistrationStatus.DRAFT);
+                pharmacyRegistrationDetailsRepository.findByUserId(userId);
         return pharmacyRegistrationDetailsMapper.toPharmaciesByUserIdDtoList(details);
     }
 
