@@ -1,5 +1,6 @@
 package com.example.tiamedsadmin.entity.pharmaInventory;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ public class PharmacyRegistrationDocuments {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pharmacy_registration_id")
-    private PharmacyRegistrationDetails pharmacy_registration_id;
+    private PharmacyRegistrationDetails pharmacyRegistrationId;
 
     @Column(name = "document_number", length = 60)
     private String documentNumber;

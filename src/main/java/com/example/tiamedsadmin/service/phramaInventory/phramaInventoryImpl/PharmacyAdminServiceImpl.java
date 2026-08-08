@@ -70,7 +70,7 @@ public class PharmacyAdminServiceImpl implements PharmacyAdminService {
         pharmacyStatusReview.setRemark(remark);
         pharmacyStatusReview.setStatusDate(LocalDateTime.now());
         pharmacyStatusReview.setReviewedBy("admin"); // Set the admin username or ID here
-        pharmacyStatusReview.setPharmacy_registration_id(existing);
+        pharmacyStatusReview.setPharmacyRegistrationId(existing);
 
         existing.getPharmacyStatusReview().add(pharmacyStatusReview);
         pharmacyRegistrationDetailsRepository.save(existing);
@@ -168,6 +168,7 @@ public class PharmacyAdminServiceImpl implements PharmacyAdminService {
         requestBody.put("ownershipType", existing.getOwnershipType());
         requestBody.put("organizationPanNumber", existing.getOrganizationPanNumber());
         requestBody.put("organizationGstNumber", existing.getOrganizationGstNumber());
+        requestBody.put("centralizedInventory", existing.getCentralizedInventory());
         requestBody.put("documents", documents);
 
         InventoryPharmacyResponseDto response = webClient.post()
@@ -236,7 +237,7 @@ public class PharmacyAdminServiceImpl implements PharmacyAdminService {
         pharmacyStatusReview.setRemark(remark);
         pharmacyStatusReview.setStatusDate(LocalDateTime.now());
         pharmacyStatusReview.setReviewedBy("admin");
-        pharmacyStatusReview.setPharmacy_registration_id(existing);
+        pharmacyStatusReview.setPharmacyRegistrationId(existing);
 
         existing.getPharmacyStatusReview().add(pharmacyStatusReview);
 
@@ -315,7 +316,7 @@ public class PharmacyAdminServiceImpl implements PharmacyAdminService {
         pharmacyStatusReview.setRemark(remark);
         pharmacyStatusReview.setStatusDate(LocalDateTime.now());
         pharmacyStatusReview.setReviewedBy("admin");
-        pharmacyStatusReview.setPharmacy_registration_id(existing);
+        pharmacyStatusReview.setPharmacyRegistrationId(existing);
 
         existing.getPharmacyStatusReview().add(pharmacyStatusReview);
         pharmacyRegistrationDetailsRepository.save(existing);

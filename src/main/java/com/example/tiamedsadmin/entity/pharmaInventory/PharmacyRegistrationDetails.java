@@ -89,6 +89,9 @@ public class PharmacyRegistrationDetails {
     @Column(name = "organization_gst_number", length = 20)
     private String organizationGstNumber;
 
+    @Column(name = "centralized_inventory")
+    private Boolean centralizedInventory;
+
     @Column(name = "pharmacy_id", unique = true, length = 60)        // Pharmacy ID After Approval
     private String pharmacyId;
 
@@ -97,13 +100,17 @@ public class PharmacyRegistrationDetails {
     @Column(name = "registration_status", length = 20)
     private RegistrationStatus registrationStatus;
 
-    @OneToMany(mappedBy = "pharmacy_registration_id", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "pharmacyRegistrationId", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<PharmacyStatusReview> pharmacyStatusReview;
 
-    @OneToMany(mappedBy = "pharmacy_registration_id", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "pharmacyRegistrationId", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<PharmacyRegistrationDocuments> pharmacyRegistrationDocuments;
+
+    @OneToMany(mappedBy = "pharmacyRegistrationId", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<PharmacyRegistrationWareHouse> pharmacyRegistrationWareHouses;
 
     @Column(name = "created_date")
     private LocalDateTime createdDate;

@@ -3,9 +3,11 @@ package com.example.tiamedsadmin.service.phramaInventory.phramaInventoryImpl;
 import com.example.tiamedsadmin.dto.pharmaInventory.PharmacyKpiDto;
 import com.example.tiamedsadmin.dto.pharmaInventory.PharmacyRegistrationDetailsDto;
 import com.example.tiamedsadmin.dto.pharmaInventory.PharmacyRegistrationDocumentsDto;
+import com.example.tiamedsadmin.dto.pharmaInventory.PharmacyRegistrationWareHouseDto;
 import com.example.tiamedsadmin.dto.pharmaInventory.PharmaciesByUserIdDto;
 import com.example.tiamedsadmin.entity.pharmaInventory.PharmacyRegistrationDetails;
 import com.example.tiamedsadmin.entity.pharmaInventory.PharmacyRegistrationDocuments;
+import com.example.tiamedsadmin.entity.pharmaInventory.PharmacyRegistrationWareHouse;
 import com.example.tiamedsadmin.entity.pharmaInventory.PharmacyStatusReview;
 import com.example.tiamedsadmin.entity.pharmaInventory.RegistrationStatus;
 import com.example.tiamedsadmin.exception.ApplicationException;
@@ -89,6 +91,7 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
         entity.setOwnershipType(dto.getOwnershipType());
         entity.setOrganizationPanNumber(dto.getOrganizationPanNumber());
         entity.setOrganizationGstNumber(dto.getOrganizationGstNumber());
+        entity.setCentralizedInventory(dto.getCentralizedInventory());
 
         entity.setCreatedDate(LocalDateTime.now());
         entity.setUpdatedDate(LocalDateTime.now());
@@ -98,7 +101,7 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
 
         // Create status row and set directly to entity
         PharmacyStatusReview statusReview = new PharmacyStatusReview();
-        statusReview.setPharmacy_registration_id(entity);
+        statusReview.setPharmacyRegistrationId(entity);
         statusReview.setStatus("SUBMITTED");
         statusReview.setRemark("Pharmacy registration submitted for review");
         statusReview.setReviewedBy("System");
@@ -112,7 +115,7 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
                     .stream()
                     .map(docDto -> {
                         PharmacyRegistrationDocuments doc = new PharmacyRegistrationDocuments();
-                        doc.setPharmacy_registration_id(entity);
+                        doc.setPharmacyRegistrationId(entity);
                         doc.setDocumentNumber(docDto.getDocumentNumber());
                         doc.setDocumentType(docDto.getDocumentType());
                         doc.setDocumentUrl("NOT_UPLOADED");
@@ -128,6 +131,28 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
                     .toList();
         }
         entity.setPharmacyRegistrationDocuments(new ArrayList<>(documents));
+
+        // Create warehouse rows — warehouseName/address mandatory, rest optional
+        List<PharmacyRegistrationWareHouse> warehouses = new ArrayList<>();
+        if (dto.getPharmacyRegistrationWareHouses() != null) {
+            warehouses = dto.getPharmacyRegistrationWareHouses()
+                    .stream()
+                    .map(whDto -> {
+                        PharmacyRegistrationWareHouse wh = new PharmacyRegistrationWareHouse();
+                        wh.setPharmacyRegistrationId(entity);
+                        wh.setWarehouseName(whDto.getWarehouseName());
+                        wh.setWarehouseCode(whDto.getWarehouseCode());
+                        wh.setWarehouseAddress(whDto.getWarehouseAddress());
+                        wh.setContactPersonName(whDto.getContactPersonName());
+                        wh.setMobileNumber(whDto.getMobileNumber());
+                        wh.setActive(true);
+                        wh.setCreatedAt(LocalDateTime.now());
+                        wh.setUpdatedAt(LocalDateTime.now());
+                        return wh;
+                    })
+                    .toList();
+        }
+        entity.setPharmacyRegistrationWareHouses(new ArrayList<>(warehouses));
 
         PharmacyRegistrationDetails saved = pharmacyRegistrationDetailsRepository.save(entity);
         return pharmacyRegistrationDetailsMapper.toDto(saved);
@@ -163,11 +188,13 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
             // No status review row until the draft is submitted
             draft.setPharmacyStatusReview(new ArrayList<>());
             draft.setPharmacyRegistrationDocuments(new ArrayList<>());
+            draft.setPharmacyRegistrationWareHouses(new ArrayList<>());
             entity = draft;
         }
 
         applyDetails(entity, dto);
         syncDocuments(entity, dto);
+        syncWarehouses(entity, dto);
 
         PharmacyRegistrationDetails saved = pharmacyRegistrationDetailsRepository.save(entity);
         return pharmacyRegistrationDetailsMapper.toDto(saved);
@@ -189,12 +216,13 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
         // Apply the latest form values before validating completeness
         applyDetails(existing, dto);
         syncDocuments(existing, dto);
+        syncWarehouses(existing, dto);
         validateReadyForSubmission(existing);
 
         existing.setRegistrationStatus(RegistrationStatus.SUBMITTED);
 
         PharmacyStatusReview statusReview = new PharmacyStatusReview();
-        statusReview.setPharmacy_registration_id(existing);
+        statusReview.setPharmacyRegistrationId(existing);
         statusReview.setStatus("SUBMITTED");
         statusReview.setRemark("Pharmacy registration submitted for review");
         statusReview.setReviewedBy("System");
@@ -227,6 +255,7 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
         entity.setOwnershipType(dto.getOwnershipType());
         entity.setOrganizationPanNumber(dto.getOrganizationPanNumber());
         entity.setOrganizationGstNumber(dto.getOrganizationGstNumber());
+        entity.setCentralizedInventory(dto.getCentralizedInventory());
         entity.setUpdatedDate(LocalDateTime.now());
         entity.setUpdatedBy("System");
     }
@@ -254,7 +283,7 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
                 existingDoc.setUpdatedAt(LocalDateTime.now());
             } else {
                 PharmacyRegistrationDocuments doc = new PharmacyRegistrationDocuments();
-                doc.setPharmacy_registration_id(entity);
+                doc.setPharmacyRegistrationId(entity);
                 doc.setDocumentNumber(docDto.getDocumentNumber());
                 doc.setDocumentType(docDto.getDocumentType());
                 doc.setDocumentUrl("NOT_UPLOADED");
@@ -266,6 +295,42 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
                 doc.setCreatedAt(LocalDateTime.now());
                 doc.setUpdatedAt(LocalDateTime.now());
                 entity.getPharmacyRegistrationDocuments().add(doc);
+            }
+        }
+    }
+
+    // Update existing warehouse rows in place; add only genuinely new ones
+    private void syncWarehouses(PharmacyRegistrationDetails entity, PharmacyRegistrationDetailsDto dto) {
+        if (dto.getPharmacyRegistrationWareHouses() == null) {
+            return;
+        }
+        for (PharmacyRegistrationWareHouseDto whDto : dto.getPharmacyRegistrationWareHouses()) {
+            if (whDto.getPharmacyRegistrationWarehouseId() != null) {
+                PharmacyRegistrationWareHouse existingWh = entity.getPharmacyRegistrationWareHouses()
+                        .stream()
+                        .filter(w -> w.getPharmacyRegistrationWarehouseId().equals(whDto.getPharmacyRegistrationWarehouseId()))
+                        .findFirst()
+                        .orElseThrow(() -> new NotFoundException(
+                                "Warehouse not found with id: " + whDto.getPharmacyRegistrationWarehouseId()));
+
+                existingWh.setWarehouseName(whDto.getWarehouseName());
+                existingWh.setWarehouseCode(whDto.getWarehouseCode());
+                existingWh.setWarehouseAddress(whDto.getWarehouseAddress());
+                existingWh.setContactPersonName(whDto.getContactPersonName());
+                existingWh.setMobileNumber(whDto.getMobileNumber());
+                existingWh.setUpdatedAt(LocalDateTime.now());
+            } else {
+                PharmacyRegistrationWareHouse wh = new PharmacyRegistrationWareHouse();
+                wh.setPharmacyRegistrationId(entity);
+                wh.setWarehouseName(whDto.getWarehouseName());
+                wh.setWarehouseCode(whDto.getWarehouseCode());
+                wh.setWarehouseAddress(whDto.getWarehouseAddress());
+                wh.setContactPersonName(whDto.getContactPersonName());
+                wh.setMobileNumber(whDto.getMobileNumber());
+                wh.setActive(true);
+                wh.setCreatedAt(LocalDateTime.now());
+                wh.setUpdatedAt(LocalDateTime.now());
+                entity.getPharmacyRegistrationWareHouses().add(wh);
             }
         }
     }
@@ -314,6 +379,7 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
         existing.setOwnershipType(dto.getOwnershipType());
         existing.setOrganizationPanNumber(dto.getOrganizationPanNumber());
         existing.setOrganizationGstNumber(dto.getOrganizationGstNumber());
+        existing.setCentralizedInventory(dto.getCentralizedInventory());
         existing.setUpdatedDate(LocalDateTime.now());
         existing.setUpdatedBy("System");
 
@@ -338,7 +404,7 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
                 } else {
                     // New document added as part of the update
                     PharmacyRegistrationDocuments doc = new PharmacyRegistrationDocuments();
-                    doc.setPharmacy_registration_id(existing);
+                    doc.setPharmacyRegistrationId(existing);
                     doc.setDocumentNumber(docDto.getDocumentNumber());
                     doc.setDocumentType(docDto.getDocumentType());
                     doc.setDocumentUrl("NOT_UPLOADED");
@@ -353,6 +419,8 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
                 }
             }
         }
+
+        syncWarehouses(existing, dto);
 
         PharmacyRegistrationDetails saved = pharmacyRegistrationDetailsRepository.save(existing);
         return pharmacyRegistrationDetailsMapper.toDto(saved);
@@ -400,6 +468,7 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
         existing.setOwnershipType(dto.getOwnershipType());
         existing.setOrganizationPanNumber(dto.getOrganizationPanNumber());
         existing.setOrganizationGstNumber(dto.getOrganizationGstNumber());
+        existing.setCentralizedInventory(dto.getCentralizedInventory());
         existing.setUpdatedDate(LocalDateTime.now());
         existing.setUpdatedBy("System");
 
@@ -424,7 +493,7 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
                 } else {
                     // New document added as part of the correction
                     PharmacyRegistrationDocuments doc = new PharmacyRegistrationDocuments();
-                    doc.setPharmacy_registration_id(existing);
+                    doc.setPharmacyRegistrationId(existing);
                     doc.setDocumentNumber(docDto.getDocumentNumber());
                     doc.setDocumentType(docDto.getDocumentType());
                     doc.setDocumentUrl("NOT_UPLOADED");
@@ -440,9 +509,11 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
             }
         }
 
+        syncWarehouses(existing, dto);
+
         // Add RESUBMITTED status to history (keeps CORRECTION row intact)
         PharmacyStatusReview statusReview = new PharmacyStatusReview();
-        statusReview.setPharmacy_registration_id(existing);
+        statusReview.setPharmacyRegistrationId(existing);
         statusReview.setStatus("RESUBMITTED");
         statusReview.setRemark("Pharmacy registration resubmitted after correction");
         statusReview.setReviewedBy("user");

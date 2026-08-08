@@ -31,10 +31,12 @@ public class PharmacyRegistrationDetailsDto {
     private String ownershipType;
     private String organizationPanNumber;
     private String organizationGstNumber;
+    private Boolean centralizedInventory;
     private String pharmacyId;
     private String registrationStatus; // DRAFT or SUBMITTED
     private List<PharmacyStatusReviewDto> pharmacyStatusReviews;
     private List<PharmacyRegistrationDocumentsDto> pharmacyRegistrationDocuments;
+    private List<PharmacyRegistrationWareHouseDto> pharmacyRegistrationWareHouses;
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
 }

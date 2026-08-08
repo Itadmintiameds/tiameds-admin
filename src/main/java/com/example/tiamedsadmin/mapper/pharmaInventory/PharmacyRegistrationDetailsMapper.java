@@ -19,6 +19,7 @@ public class PharmacyRegistrationDetailsMapper {
     private final PharmacyTypeMapper pharmacyTypeMapper;
     private final PharmacyStatusReviewMapper pharmacyStatusReviewMapper;
     private final PharmacyRegistrationDocumentsMapper pharmacyRegistrationDocumentsMapper;
+    private final PharmacyRegistrationWareHouseMapper pharmacyRegistrationWareHouseMapper;
 
     public PharmacyRegistrationDetailsDto toDto(PharmacyRegistrationDetails pharmacyRegistrationDetails) {
         if (pharmacyRegistrationDetails == null) {
@@ -49,6 +50,7 @@ public class PharmacyRegistrationDetailsMapper {
         dto.setOwnershipType(pharmacyRegistrationDetails.getOwnershipType());
         dto.setOrganizationPanNumber(pharmacyRegistrationDetails.getOrganizationPanNumber());
         dto.setOrganizationGstNumber(pharmacyRegistrationDetails.getOrganizationGstNumber());
+        dto.setCentralizedInventory(pharmacyRegistrationDetails.getCentralizedInventory());
         dto.setPharmacyId(pharmacyRegistrationDetails.getPharmacyId());
         // Legacy rows (null) predate the draft feature and are always submitted
         dto.setRegistrationStatus(pharmacyRegistrationDetails.getRegistrationStatus() != null
@@ -69,6 +71,15 @@ public class PharmacyRegistrationDetailsMapper {
             );
         } else {
             dto.setPharmacyRegistrationDocuments(Collections.emptyList());
+        }
+
+        if (pharmacyRegistrationDetails.getPharmacyRegistrationWareHouses() != null) {
+            dto.setPharmacyRegistrationWareHouses(
+                    pharmacyRegistrationWareHouseMapper.toDtoList(
+                            pharmacyRegistrationDetails.getPharmacyRegistrationWareHouses())
+            );
+        } else {
+            dto.setPharmacyRegistrationWareHouses(Collections.emptyList());
         }
 
         dto.setCreatedDate(pharmacyRegistrationDetails.getCreatedDate());
