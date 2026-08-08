@@ -45,7 +45,7 @@ spring:
       max-request-size: 5MB
 
 app:
-  inventory-login-url: http://localhost:3000/
+  inventory-login-url: http://localhost:3000/login
   admin-frontend-url: http://localhost:3000
   admin-seed:
     full-name: ${ADMIN_SEED_NAME}

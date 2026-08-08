@@ -43,7 +43,7 @@ spring:
       max-request-size: 5MB
 
 app:
-  inventory-login-url: https://pharma-test.tiameds.ai/
+  inventory-login-url: https://pharma-test.tiameds.ai/login
   admin-frontend-url: https://admin-test.tiameds.ai
   admin-seed:
     full-name: ${ADMIN_SEED_NAME}
