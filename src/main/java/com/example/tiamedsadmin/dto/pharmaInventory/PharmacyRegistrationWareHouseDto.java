@@ -6,6 +6,7 @@ import lombok.Data;
 public class PharmacyRegistrationWareHouseDto {
 
     private Long pharmacyRegistrationWarehouseId;
+    private String warehouseId;
     private String warehouseName;
     private String warehouseCode;
     private String warehouseAddress;

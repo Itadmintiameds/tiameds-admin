@@ -16,6 +16,7 @@ public class PharmacyRegistrationWareHouseMapper {
 
         PharmacyRegistrationWareHouseDto dto = new PharmacyRegistrationWareHouseDto();
         dto.setPharmacyRegistrationWarehouseId(pharmacyRegistrationWareHouse.getPharmacyRegistrationWarehouseId());
+        dto.setWarehouseId(pharmacyRegistrationWareHouse.getWarehouseId());
         dto.setWarehouseName(pharmacyRegistrationWareHouse.getWarehouseName());
         dto.setWarehouseCode(pharmacyRegistrationWareHouse.getWarehouseCode());
         dto.setWarehouseAddress(pharmacyRegistrationWareHouse.getWarehouseAddress());

@@ -1,6 +1,5 @@
 package com.example.tiamedsadmin.entity.pharmaInventory;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,6 +20,9 @@ public class PharmacyRegistrationWareHouse {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pharmacy_registration_warehouse_id")
     private Long pharmacyRegistrationWarehouseId;
+
+    @Column(name = "warehouse_id")
+    private String warehouseId;
 
     @Column(name = "warehouse_name")
     private String warehouseName;

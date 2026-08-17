@@ -140,6 +140,7 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
                     .map(whDto -> {
                         PharmacyRegistrationWareHouse wh = new PharmacyRegistrationWareHouse();
                         wh.setPharmacyRegistrationId(entity);
+                        wh.setWarehouseId(whDto.getWarehouseId());
                         wh.setWarehouseName(whDto.getWarehouseName());
                         wh.setWarehouseCode(whDto.getWarehouseCode());
                         wh.setWarehouseAddress(whDto.getWarehouseAddress());
@@ -313,6 +314,7 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
                         .orElseThrow(() -> new NotFoundException(
                                 "Warehouse not found with id: " + whDto.getPharmacyRegistrationWarehouseId()));
 
+                existingWh.setWarehouseId(whDto.getWarehouseId());
                 existingWh.setWarehouseName(whDto.getWarehouseName());
                 existingWh.setWarehouseCode(whDto.getWarehouseCode());
                 existingWh.setWarehouseAddress(whDto.getWarehouseAddress());
@@ -322,6 +324,7 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
             } else {
                 PharmacyRegistrationWareHouse wh = new PharmacyRegistrationWareHouse();
                 wh.setPharmacyRegistrationId(entity);
+                wh.setWarehouseId(whDto.getWarehouseId());
                 wh.setWarehouseName(whDto.getWarehouseName());
                 wh.setWarehouseCode(whDto.getWarehouseCode());
                 wh.setWarehouseAddress(whDto.getWarehouseAddress());
