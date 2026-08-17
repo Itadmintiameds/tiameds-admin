@@ -4,6 +4,7 @@ import com.example.tiamedsadmin.dto.pharmaInventory.InventoryPharmacyResponseDto
 import com.example.tiamedsadmin.dto.pharmaInventory.PharmaDocumentsDto;
 import com.example.tiamedsadmin.dto.pharmaInventory.PharmacyStatusReviewDto;
 import com.example.tiamedsadmin.entity.pharmaInventory.PharmacyRegistrationDetails;
+import com.example.tiamedsadmin.entity.pharmaInventory.PharmacyRegistrationWareHouse;
 import com.example.tiamedsadmin.entity.pharmaInventory.PharmacyStatusReview;
 import com.example.tiamedsadmin.exception.ApplicationException;
 import com.example.tiamedsadmin.exception.NotFoundException;
@@ -21,11 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -162,6 +159,11 @@ public class PharmacyAdminServiceImpl implements PharmacyAdminService {
         requestBody.put("pharmacyPincode", existing.getPharmacyPincode());
         requestBody.put("pharmacyLandmark", existing.getPharmacyLandmark());
         requestBody.put("pharmacyState", existing.getPharmacyState());
+        PharmacyRegistrationWareHouse warehouse = existing.getPharmacyRegistrationWareHouses().stream()
+                .findFirst()
+                .orElse(null);
+        requestBody.put("warehouseId", warehouse != null ? warehouse.getWarehouseId() : null);
+        requestBody.put("warehouseName", warehouse != null ? warehouse.getWarehouseName() : null);
         requestBody.put("organizationId", existing.getOrganizationId());
         requestBody.put("organizationName", existing.getOrganizationName());
         requestBody.put("organizationType", existing.getOrganizationType());
