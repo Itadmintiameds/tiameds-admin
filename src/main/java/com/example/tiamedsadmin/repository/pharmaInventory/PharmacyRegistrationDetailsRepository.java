@@ -65,4 +65,28 @@ public interface PharmacyRegistrationDetailsRepository extends JpaRepository<Pha
             GROUP BY latest.status
             """, nativeQuery = true)
     List<Object[]> countByLatestStatusForUser(String userId);
+
+    // Whether another registration that is still awaiting a decision holds this
+    // pharmacy GSTIN. Drafts are ignored, and so are registrations whose latest
+    // review is ACCEPT (the pharmacy then lives in pharma-backend, which checks
+    // it there) or REJECT (the GSTIN is freed). No review row = SUBMITTED.
+    // gstNumber must be passed trimmed and upper-cased; excludeId may be "".
+    @Query(value = """
+            SELECT EXISTS (
+                SELECT 1
+                FROM pharmacy_registration_details prd
+                WHERE UPPER(TRIM(prd.gst_number)) = :gstNumber
+                  AND (prd.registration_status IS NULL OR prd.registration_status <> 'DRAFT')
+                  AND prd.pharmacy_registration_id <> :excludeId
+                  AND COALESCE((
+                        SELECT UPPER(psr.status)
+                        FROM pharmacy_status_review psr
+                        WHERE psr.pharmacy_registration_id = prd.pharmacy_registration_id
+                        ORDER BY psr.status_date DESC NULLS LAST, psr.status_id DESC
+                        LIMIT 1
+                      ), 'SUBMITTED') NOT IN ('ACCEPT', 'REJECT')
+            )
+            """, nativeQuery = true)
+    boolean existsPendingWithGstNumber(@Param("gstNumber") String gstNumber,
+                                       @Param("excludeId") String excludeId);
 }

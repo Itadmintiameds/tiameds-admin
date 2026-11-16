@@ -26,6 +26,10 @@ public interface PharmacyRegistrationDetailsService {
 
     PharmacyRegistrationDetailsDto resubmit(String id, PharmacyRegistrationDetailsDto pharmacyRegistrationDetailsDto);
 
+    // True when another registration still awaiting review holds this pharmacy
+    // GSTIN. excludeRegistrationId (nullable) is the registration being edited.
+    boolean isGstNumberPending(String gstNumber, String excludeRegistrationId);
+
     void delete(String id);
 
     void verifyDocument(String pharmacyRegistrationId,

@@ -43,6 +43,20 @@ public class PharmacyRegistrationDetailsController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    // Whether a pharmacy GSTIN is already on another registration awaiting
+    // review. excludeRegistrationId = the registration being edited, if any.
+    @GetMapping("/check-gst")
+    public ResponseEntity<?> checkGstNumber(
+            @RequestParam String gstNumber,
+            @RequestParam(required = false) String excludeRegistrationId) {
+        boolean taken = pharmacyRegistrationDetailsService.isGstNumberPending(gstNumber, excludeRegistrationId);
+        ApiResponse<Boolean> response = new ApiResponse<>(
+                HttpStatus.OK,
+                taken ? "GST number is already registered" : "GST number is available",
+                taken);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable String id) {
         PharmacyRegistrationDetailsDto dto = pharmacyRegistrationDetailsService.findById(id);

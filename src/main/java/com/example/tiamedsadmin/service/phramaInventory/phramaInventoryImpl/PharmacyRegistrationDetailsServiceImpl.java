@@ -18,6 +18,7 @@ import com.example.tiamedsadmin.service.S3Service;
 import com.example.tiamedsadmin.service.phramaInventory.PharmacyRegistrationDetailsService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -57,10 +58,31 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
         return pharmacyRegistrationDetailsMapper.toDto(pharmacyRegistrationDetails);
     }
 
+    @Override
+    public boolean isGstNumberPending(String gstNumber, String excludeRegistrationId) {
+        if (gstNumber == null || gstNumber.isBlank()) {
+            return false;
+        }
+        return pharmacyRegistrationDetailsRepository.existsPendingWithGstNumber(
+                gstNumber.trim().toUpperCase(),
+                excludeRegistrationId == null ? "" : excludeRegistrationId);
+    }
+
+    // No two pharmacies may share a GSTIN: block a submission whose GSTIN is
+    // already on another registration awaiting review.
+    private void ensureGstNumberNotPending(String gstNumber, String excludeRegistrationId) {
+        if (isGstNumberPending(gstNumber, excludeRegistrationId)) {
+            throw new ApplicationException(HttpStatus.CONFLICT,
+                    "This GST number is already registered.");
+        }
+    }
+
     // ─── API 1: POST - Full details + create document rows with NOT_UPLOADED ──────
     @Override
     @Transactional
     public PharmacyRegistrationDetailsDto create(PharmacyRegistrationDetailsDto dto) {
+        ensureGstNumberNotPending(dto.getGstNumber(), null);
+
         // Check for duplicate email
 //        if (pharmacyRegistrationDetailsRepository.existsByPharmacyEmail(dto.getPharmacyEmail())) {
 //            throw new ApplicationException("Pharmacy with email already exists: " + dto.getPharmacyEmail());
@@ -219,6 +241,7 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
         syncDocuments(existing, dto);
         syncWarehouses(existing, dto);
         validateReadyForSubmission(existing);
+        ensureGstNumberNotPending(existing.getGstNumber(), id);
 
         existing.setRegistrationStatus(RegistrationStatus.SUBMITTED);
 
@@ -448,6 +471,8 @@ public class PharmacyRegistrationDetailsServiceImpl implements PharmacyRegistrat
                     "Pharmacy can only be resubmitted when its current status is CORRECTION. Current status: "
                             + latest.getStatus());
         }
+
+        ensureGstNumberNotPending(dto.getGstNumber(), id);
 
         // Update the corrected basic fields
         existing.setPharmacyName(dto.getPharmacyName());
