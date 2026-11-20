@@ -1,0 +1,80 @@
+{
+  "family": "tiamed-admin-prod-task-defination",
+  "containerDefinitions": [
+    {
+      "name": "tiamed-admin-prod",
+      "image": "977098986605.dkr.ecr.ap-south-1.amazonaws.com/admin-prod",
+      "cpu": 0,
+      "portMappings": [
+        {
+          "name": "tiameds-admin",
+          "containerPort": 8080,
+          "hostPort": 8080,
+          "protocol": "tcp",
+          "appProtocol": "http"
+        }
+      ],
+      "essential": true,
+      "environment": [
+        { "name": "SPRING_PROFILES_ACTIVE", "value": "prod" },
+        { "name": "JPA_DDL_AUTO", "value": "update" },
+        { "name": "JWT_COOKIE_SECURE", "value": "true" },
+        { "name": "ADMIN_FRONTEND_URL", "value": "https://admin.tiameds.ai" },
+        { "name": "INVENTORY_LOGIN_URL", "value": "https://pharma.tiameds.ai/login" },
+        { "name": "INVENTORY_SERVICE_BASE_URL", "value": "https://api-prodpharma.tiameds.ai" }
+      ],
+      "environmentFiles": [],
+      "mountPoints": [],
+      "volumesFrom": [],
+      "secrets": [
+        { "name": "DB_NAME", "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-prod-2a8kqL:DB_NAME::" },
+        { "name": "DB_PASSWORD", "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-prod-2a8kqL:DB_PASSWORD::" },
+        { "name": "DB_PORT", "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-prod-2a8kqL:DB_PORT::" },
+        { "name": "DB_URL", "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-prod-2a8kqL:DB_URL::" },
+        { "name": "DB_USERNAME", "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-prod-2a8kqL:DB_USERNAME::" },
+        { "name": "AWS_ACCESS_KEY", "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-prod-2a8kqL:AWS_ACCESS_KEY::" },
+        { "name": "AWS_SECRET_KEY", "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-prod-2a8kqL:AWS_SECRET_KEY::" },
+        { "name": "AWS_REGION", "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-prod-2a8kqL:AWS_REGION::" },
+        { "name": "AWS_BUCKET_NAME", "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-prod-2a8kqL:AWS_BUCKET_NAME::" },
+        { "name": "SPRING_MAIL_HOST", "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-prod-2a8kqL:SPRING_MAIL_HOST::" },
+        { "name": "SPRING_MAIL_PORT", "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-prod-2a8kqL:SPRING_MAIL_PORT::" },
+        { "name": "SPRING_MAIL_USERNAME", "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-prod-2a8kqL:SPRING_MAIL_USERNAME::" },
+        { "name": "SPRING_MAIL_PASSWORD", "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-prod-2a8kqL:SPRING_MAIL_PASSWORD::" },
+        { "name": "JWT_SECRET", "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-prod-2a8kqL:JWT_SECRET::" },
+        { "name": "JWT_ACCESS_VALIDITY_MINUTES", "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-prod-2a8kqL:JWT_ACCESS_VALIDITY_MINUTES::" },
+        { "name": "JWT_REFRESH_VALIDITY_DAYS", "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-prod-2a8kqL:JWT_REFRESH_VALIDITY_DAYS::" },
+        { "name": "ADMIN_SEED_NAME", "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-prod-2a8kqL:ADMIN_SEED_NAME::" },
+        { "name": "ADMIN_SEED_EMAIL", "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-prod-2a8kqL:ADMIN_SEED_EMAIL::" },
+        { "name": "ADMIN_SEED_PASSWORD", "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-prod-2a8kqL:ADMIN_SEED_PASSWORD::" },
+        { "name": "INVENTORY_INTERNAL_API_KEY", "valueFrom": "arn:aws:secretsmanager:ap-south-1:977098986605:secret:tiamed-admin-prod-2a8kqL:INVENTORY_INTERNAL_API_KEY::" }
+      ],
+      "ulimits": [],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/tiamed-admin-prod-task-defination",
+          "awslogs-create-group": "true",
+          "awslogs-region": "ap-south-1",
+          "awslogs-stream-prefix": "ecs"
+        },
+        "secretOptions": []
+      },
+      "systemControls": []
+    }
+  ],
+  "taskRoleArn": "arn:aws:iam::977098986605:role/ecsTaskExecutionRole",
+  "executionRoleArn": "arn:aws:iam::977098986605:role/ecsTaskExecutionRole",
+  "networkMode": "awsvpc",
+  "volumes": [],
+  "placementConstraints": [],
+  "runtimePlatform": {
+    "cpuArchitecture": "X86_64",
+    "operatingSystemFamily": "LINUX"
+  },
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "cpu": "1024",
+  "memory": "3072",
+  "tags": []
+}

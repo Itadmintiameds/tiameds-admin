@@ -1,0 +1,77 @@
+name: CI/CD Pipeline - Production
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+# Never run two prod deploys at the same time; queue the newer one instead of cancelling mid-deploy.
+concurrency:
+  group: prod-deploy
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    # AWS credentials/region are shared with the test pipeline; ECR/ECS targets use
+    # PROD_-prefixed repository secrets (Settings -> Secrets and variables -> Actions).
+
+    steps:
+      # Step 1: Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Set up JDK 17 for Maven
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      # Step 3: Build with Maven
+      - name: Build with Maven
+        run: mvn -DskipTests clean install
+
+      # Step 4: Configure AWS credentials
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      # Step 5: Log in to Amazon ECR
+      - name: Log in to Amazon ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # Step 6: Build, Tag, and Push Docker Image to Amazon ECR
+      - name: Build, Tag, and Push Docker Image to Amazon ECR
+        env:
+          ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+          ECR_REPOSITORY: ${{ secrets.PROD_ECR_REPOSITORY }}
+        run: |
+          echo "Building Docker image $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+      # Step 7: Update ECS Task Definition
+      - name: Update ECS Task Definition
+        id: update-task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: deploy/tiamed-admin-prod-task-defination.json
+          container-name: tiamed-admin-prod
+          image: ${{ steps.ecr-login.outputs.registry }}/${{ secrets.PROD_ECR_REPOSITORY }}:${{ github.sha }}
+
+      # Step 8: Deploy to ECS
+      - name: Deploy to ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.update-task-def.outputs.task-definition }}
+          service: ${{ secrets.PROD_ECS_SERVICE }}
+          cluster: ${{ secrets.PROD_ECS_CLUSTER }}
+          wait-for-service-stability: true

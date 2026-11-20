@@ -2,20 +2,79 @@ server:
   servlet:
     context-path: /api/v1
 
+aws:
+  s3:
+    access-key: ${AWS_ACCESS_KEY}
+    secret-key: ${AWS_SECRET_KEY}
+    region: ${AWS_REGION:ap-south-1}
+    bucket-name: ${AWS_BUCKET_NAME}
+
 spring:
   datasource:
-    url: jdbc:postgresql://postgres-prod:5432/pharma-aggregator_prod?charSet=UTF8
-    username: postgres
-    password: root
+    url: jdbc:postgresql://${DB_URL}:${DB_PORT}/${DB_NAME}?characterEncoding=UTF-8
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: validate
+      # No migration tool (Flyway/Liquibase) yet, so a fresh RDS needs "update" to create tables.
+      # Switch JPA_DDL_AUTO to "validate" in the task definition once the schema is in place.
+      ddl-auto: ${JPA_DDL_AUTO:validate}
     show-sql: false
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
+  mail: # Email configuration
+    host: ${SPRING_MAIL_HOST:smtp.gmail.com}
+    port: ${SPRING_MAIL_PORT:587}
+    username: ${SPRING_MAIL_USERNAME}
+    password: ${SPRING_MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+
+app:
+  inventory-login-url: ${INVENTORY_LOGIN_URL}
+  admin-frontend-url: ${ADMIN_FRONTEND_URL}
+  admin-seed:
+    full-name: ${ADMIN_SEED_NAME}
+    email: ${ADMIN_SEED_EMAIL}
+    password: ${ADMIN_SEED_PASSWORD}
+
+microservices:
+  inventory-service:
+    base-url: ${INVENTORY_SERVICE_BASE_URL}
+    # Must match internal.api-key configured in the inventory service
+    api-key: ${INVENTORY_INTERNAL_API_KEY}
+
+  # Twilio sms
+twilio:
+  account-sid: ${ACCOUNT_SID:dummy}
+  auth-token: ${AUTH_TOKEN:dummy}
+  verify:
+    service-sid: ${SERVICE_SID:dummy}
+
 springdoc:
+  api-docs:
+    enabled: false
   swagger-ui:
     enabled: false
+
+security:
+  jwt:
+    secret: ${JWT_SECRET}
+    access-token-validity-minutes: ${JWT_ACCESS_VALIDITY_MINUTES}
+    refresh-token-validity-days: ${JWT_REFRESH_VALIDITY_DAYS}
+    refresh-cookie:
+      secure: ${JWT_COOKIE_SECURE:true}
+      same-site: ${JWT_COOKIE_SAMESITE:Lax}
