@@ -19,7 +19,7 @@ spring:
     hibernate:
       # No migration tool (Flyway/Liquibase) yet, so a fresh RDS needs "update" to create tables.
       # Switch JPA_DDL_AUTO to "validate" in the task definition once the schema is in place.
-      ddl-auto: create
+      ddl-auto: update
     show-sql: false
     properties:
       hibernate:
